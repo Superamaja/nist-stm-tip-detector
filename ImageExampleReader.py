@@ -17,7 +17,7 @@ from tensorflow.keras.preprocessing.image import (
     load_img,
 )
 
-example_dirs = ["exampleTest_test"]
+example_dirs = ["training_data"]
 vsplit = 0.2
 batch_size = 10
 image_px = 75
@@ -249,7 +249,7 @@ model.compile(
 
 early_stopping = EarlyStopping(
     monitor="val_loss",
-    patience=10,
+    patience=20,
     restore_best_weights=True,
     min_delta=0.0001,
 )
@@ -257,9 +257,9 @@ early_stopping = EarlyStopping(
 
 history = model.fit(
     train_generator,
-    # steps_per_epoch=ceil(len(train_labels) / batch_size),
-    epochs=500,
     validation_data=validation_generator,
+    epochs=500,
+    batch_size=batch_size,
     verbose=1,
     callbacks=[early_stopping],
 )
@@ -283,11 +283,17 @@ model.save(f"{folder_directory}/model.keras")
 with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
         f"""
-        Model Final Accuracy: {history.history["acc"][-1]}
+        --Training Info--
+        Epochs: {len(history.history["acc"])}
+        Batch Size: {batch_size}
+        
+        --Model Info--
+        Model Best/Restored Validation Loss: {history.history["val_loss"][np.argmin(history.history["val_loss"])]}
+        
+        Model Final Training Accuracy: {history.history["acc"][-1]}
         Model Final Validation Accuracy: {history.history["val_acc"][-1]}
-        Model Final Loss: {history.history["loss"][-1]}
+        Model Final Training Loss: {history.history["loss"][-1]}
         Model Final Validation Loss: {history.history["val_loss"][-1]}
-        Loss Metric Type: {model.loss}
     """
     )
 
