@@ -15,8 +15,8 @@ GREEN = (0, 255, 0)
 BLUE = (255, 200, 0)
 
 CLASS_NAMES = {
-    0: "Sharp",
-    1: "Dull",
+    0: "Dull",
+    1: "Sharp",
 }
 
 # Handle arguments
@@ -72,11 +72,11 @@ for cnt in contours:
         roi_preprocessed = preprocess_image(roi)
         prediction = model.predict(roi_preprocessed)[0][0]
         # cls = np.argmax(prediction)
-        cls = 0 if prediction >= SHARP_PREDICTION_THRESHOLD else 1
+        cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
         print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
 
         # Draw bounding box
-        cv2.rectangle(img, (x, y), (x + w, y + h), GREEN if cls == 0 else RED, 1)
+        cv2.rectangle(img, (x, y), (x + w, y + h), GREEN if cls == 1 else RED, 0)
 
         # Object details
         font = cv2.FONT_HERSHEY_SIMPLEX
