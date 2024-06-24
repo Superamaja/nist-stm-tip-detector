@@ -24,6 +24,11 @@ image_px = 75
 xforms_per_image = 1
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
+CLASS_NAMES = {
+    "sharp": 0,
+    "dull": 1,
+}
+
 
 # Get the iteration number for the model training
 if os.path.exists("models/iteration.txt"):
@@ -185,6 +190,11 @@ train_labels = np.array(
     + [1] * len(sharp_indexes_t) * xforms_per_image
 )
 
+# Convert labels to categorical
+num_classes = len(CLASS_NAMES)
+validation_labels = np.eye(num_classes)[validation_labels]
+train_labels = np.eye(num_classes)[train_labels]
+
 print("validation labels: " + str(validation_labels.shape))
 print("validation images: " + str(validation_images.shape))
 
@@ -231,19 +241,19 @@ validation_generator = val_datagen.flow(
 model = Sequential(
     [
         layers.Input(shape=(image_px, image_px, 1)),
-        layers.Conv2D(30, 5, activation="relu"),
-        layers.Conv2D(40, 5, activation="relu"),
+        layers.Conv2D(32, 3, activation="relu"),
+        layers.MaxPooling2D(2, strides=(2, 2)),
         layers.MaxPooling2D(2, strides=(2, 2)),
         layers.Flatten(),
         layers.Dense(128, activation="relu"),
-        layers.Dense(1, activation="sigmoid"),
+        layers.Dense(num_classes, activation="softmax"),
     ]
 )
 
 
 model.compile(
-    loss="binary_crossentropy",
-    optimizer=Adam(learning_rate=0.00005),
+    loss="categorical_crossentropy",
+    optimizer=Adam(learning_rate=0.0001),
     metrics=["acc"],
 )
 
