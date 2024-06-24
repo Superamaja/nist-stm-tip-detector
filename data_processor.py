@@ -50,7 +50,6 @@ for i, fname in enumerate(example_fnames):
         least_x, least_y, largest_w, largest_h = cv2.boundingRect(contours[0])
         for cnt in contours[1:]:
             x, y, w, h = cv2.boundingRect(cnt)
-            print(f"X: {x}, Y: {y}, W: {w}, H: {h}")
             if x < least_x:
                 largest_w += least_x - x
                 least_x = x
@@ -61,9 +60,6 @@ for i, fname in enumerate(example_fnames):
                 largest_w = x + w - least_x
             if y + h > least_y + largest_h:
                 largest_h = y + h - least_y
-            print(
-                f"Least X: {least_x}, Least Y: {least_y}, Largest W: {largest_w}, Largest H: {largest_h}"
-            )
 
         x, y, w, h = least_x, least_y, largest_w, largest_h
 
@@ -99,8 +95,10 @@ for i, fname in enumerate(example_fnames):
             0,
         )
 
+    print()
     print(f"Image: {fname}")
-    print(f"X: {x}, Y: {y}, W: {w}, H: {h}")
+    print(f"Tip Quality: {features.iloc[i]['tipQuality']}")
+    print(f"Scale: {features.iloc[i]['scaleX']} x {features.iloc[i]['scaleY']}")
     cv2.imshow("Scan", img)
     cv2.imshow("All Contours", img2)
     cv2.imshow("Contrast", img_contrast)
