@@ -19,7 +19,7 @@ from tensorflow.keras.preprocessing.image import (
 
 example_dirs = ["training_data"]
 vsplit = 0.2
-batch_size = 10
+batch_size = 16
 image_px = 75
 xforms_per_image = 1
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
@@ -249,7 +249,7 @@ model.compile(
 
 early_stopping = EarlyStopping(
     monitor="val_loss",
-    patience=20,
+    patience=25,
     restore_best_weights=True,
     min_delta=0.0001,
 )
@@ -259,9 +259,10 @@ history = model.fit(
     train_generator,
     validation_data=validation_generator,
     epochs=500,
-    batch_size=batch_size,
     verbose=1,
     callbacks=[early_stopping],
+    # steps_per_epoch=ceil(len(train_labels) / batch_size),
+    # validation_steps=ceil(len(validation_labels) / batch_size),
 )
 
 
@@ -278,22 +279,25 @@ if not os.path.exists(folder_directory):
 
 # save the model
 model.save(f"{folder_directory}/model.keras")
+model.save(f"{folder_directory}/model.h5")
 
 # create logs
 with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
         f"""
-        --Training Info--
-        Epochs: {len(history.history["acc"])}
-        Batch Size: {batch_size}
-        
-        --Model Info--
-        Model Best/Restored Validation Loss: {history.history["val_loss"][np.argmin(history.history["val_loss"])]}
-        
-        Model Final Training Accuracy: {history.history["acc"][-1]}
-        Model Final Validation Accuracy: {history.history["val_acc"][-1]}
-        Model Final Training Loss: {history.history["loss"][-1]}
-        Model Final Validation Loss: {history.history["val_loss"][-1]}
+--Training Info--
+Epochs: {len(history.history["acc"])}
+Batch Size: {batch_size}
+Steps per Epoch: {ceil(len(train_labels)/batch_size)}
+Validation Steps: {ceil(len(validation_labels)/batch_size)}
+
+--Model Info--
+Model Best/Restored Validation Loss: {history.history["val_loss"][np.argmin(history.history["val_loss"])]}
+
+Model Final Training Accuracy: {history.history["acc"][-1]}
+Model Final Validation Accuracy: {history.history["val_acc"][-1]}
+Model Final Training Loss: {history.history["loss"][-1]}
+Model Final Validation Loss: {history.history["val_loss"][-1]}
     """
     )
 
