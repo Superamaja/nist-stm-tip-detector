@@ -1,2 +1,4 @@
 training_data/
 models/
+
+__pycache__/
