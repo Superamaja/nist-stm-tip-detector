@@ -2,13 +2,14 @@ import sys
 
 import cv2
 import numpy as np
+from helpers import extract_roi, find_contours, preprocess_image
 from tensorflow.keras.models import load_model
 
-image_path = "full_scan_examples/full_scan_example1.png"
+image_path = "full_scan_examples/full_scan_example2.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
-SHARP_PREDICTION_THRESHOLD = 0.01  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise blunt
+SHARP_PREDICTION_THRESHOLD = 0.00001  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise blunt
 
 RED = (50, 50, 255)
 GREEN = (0, 255, 0)
@@ -29,46 +30,24 @@ model = load_model("stm_model.h5")
 # model = load_model("model.h5")
 
 
-# Define a function to preprocess the image for the model
-def preprocess_image(roi):
-    roi = cv2.resize(roi, (75, 75), interpolation=cv2.INTER_AREA)
-    roi = roi.astype("float32") / 255.0
-    roi = np.expand_dims(roi, axis=-1)
-    roi = np.expand_dims(roi, axis=0)
-    return roi
-
-
 # Load the image file
 img = cv2.imread(image_path)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
-def process_image(img, alpha):
-    global img_contrast, gray_contrast, blurred_contrast, edged_contrast, contours
-
-    # Lowering contrast avoids impurities and prevents the need of size thresholding
-    img_contrast = cv2.convertScaleAbs(img, alpha=alpha, beta=0)
-    gray_contrast = cv2.cvtColor(img_contrast, cv2.COLOR_BGR2GRAY)
-    blurred_contrast = cv2.GaussianBlur(gray_contrast, (5, 5), 0)
-    edged_contrast = cv2.Canny(blurred_contrast, 50, 150)
-    contours, _ = cv2.findContours(
-        edged_contrast, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )
-
-
 # Process the image with different contrast levels
-process_image(img, 0.6)
+contours, img_contrast, edged_contrast = find_contours(img, 0.6)
 if len(contours) == 0:
-    process_image(img, 1.0)
+    contours, img_contrast, edged_contrast = find_contours(img, 1)
 
 total_bonds = 0
 total_cls = {0: 0, 1: 0}
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
-    if (
-        w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]
-    ):  # filter out small contours
-        roi = gray[y : y + h, x : x + w]
+    if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
+        roi, x, y, square_size = extract_roi(gray, x, y, w, h)
+        if roi.shape[0] == 0 or roi.shape[1] == 0:
+            continue
         roi_preprocessed = preprocess_image(roi)
         prediction = model.predict(roi_preprocessed)[0][0]
         # cls = np.argmax(prediction)
@@ -76,7 +55,13 @@ for cnt in contours:
         print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
 
         # Draw bounding box
-        cv2.rectangle(img, (x, y), (x + w, y + h), GREEN if cls == 1 else RED, 0)
+        cv2.rectangle(
+            img,
+            (x, y),
+            (x + square_size, y + square_size),
+            GREEN if cls else RED,
+            0,
+        )
 
         # Object details
         font = cv2.FONT_HERSHEY_SIMPLEX
