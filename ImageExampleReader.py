@@ -17,6 +17,8 @@ from tensorflow.keras.preprocessing.image import (
     load_img,
 )
 
+from helpers import get_ordered_fnames
+
 example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
@@ -63,33 +65,14 @@ def validation_split_list(in_list, validation_split=0):
 
 
 # determine the file names of all of the examples
-overall_example_fnames = []
+overall_fnames = []
 for example_dir in example_dirs:
-    example_fnames0 = []
-    for file in os.listdir(example_dir):
-        if file.endswith(".png"):
-            example_fnames0.append(os.path.join(example_dir, file))
-
-    # re-order according to the index specified at the end of each file name: *_[index].png
-    # (e.g. example_5.png should correspond to an index of 5)
-    # this is important because the .csv file assumes this order
-    fname_order = []
-    for fname in example_fnames0:
-        end = fname.split("_")[-1]
-        num_str = end.split(".")[0]
-        fname_order.append(int(num_str))
-
-    # example_fnames will hold the correctly ordered set of file names
-    example_fnames = [None] * len(example_fnames0)
-    old_idx = 0
-    for idx in fname_order:
-        example_fnames[idx] = example_fnames0[old_idx]
-        old_idx += 1
-    overall_example_fnames.extend(example_fnames)
+    fnames = get_ordered_fnames(example_dir)
+    overall_fnames.extend(fnames)
 
 img_data = []
 
-for fname in overall_example_fnames:
+for fname in overall_fnames:
     img = load_img(fname, target_size=(image_px, image_px), color_mode="grayscale")
     img_data.append(img_to_array(img))  # numpy array
 

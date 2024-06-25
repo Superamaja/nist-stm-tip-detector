@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 
 from config import SQUARE_NM_SIZE
+from helpers import get_ordered_fnames
 from tip_detector.helpers import (
     extract_roi,
     find_contours,
@@ -16,34 +17,13 @@ from tip_detector.helpers import (
 
 img_directory = "training_data"
 
-DEBUG = False
+DEBUG = True
 
-example_fnames0 = []
-for file in os.listdir(img_directory):
-    if file.endswith(".png"):
-        example_fnames0.append(os.path.join(img_directory, file))
 
-# re-order according to the index specified at the end of each file name: *_[index].png
-# (e.g. example_5.png should correspond to an index of 5)
-# this is important because the .csv file assumes this order
-fname_order = []
-for fname in example_fnames0:
-    end = fname.split("_")[-1]
-    num_str = end.split(".")[0]
-    fname_order.append(int(num_str))
-
-# example_fnames will hold the correctly ordered set of file names
-example_fnames = [None] * len(example_fnames0)
-old_idx = 0
-for idx in fname_order:
-    example_fnames[idx] = example_fnames0[old_idx]
-    old_idx += 1
-
-# read in the features/labels which are ordered the same as img_data
+fnames = get_ordered_fnames(img_directory)
 features = pd.read_csv(os.path.join(img_directory, "features.csv"), sep=",")
 
-
-for i, fname in enumerate(example_fnames):
+for i, fname in enumerate(fnames):
     # if not (
     #     features.iloc[i]["defectType"] == "DB" and features.iloc[i]["sampleBias"] > 0
     # ):
