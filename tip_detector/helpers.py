@@ -6,8 +6,9 @@ def preprocess_image(roi):
     """
     Preprocess the image before feeding it to the model.
     """
-    if roi.shape[0] != 50 or roi.shape[1] != 50:
-        roi = cv2.resize(roi, (50, 50), interpolation=cv2.INTER_AREA)
+    if roi.shape[0] != 75 or roi.shape[1] != 75:
+        roi = cv2.resize(roi, (75, 75), interpolation=cv2.INTER_LINEAR)
+    roi = cv2.normalize(roi, None, 0, 255, cv2.NORM_MINMAX)
     roi = roi.astype("float32") / 255.0
     roi = np.expand_dims(roi, axis=-1)
     roi = np.expand_dims(roi, axis=0)

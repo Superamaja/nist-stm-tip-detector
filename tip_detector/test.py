@@ -6,7 +6,7 @@ from tensorflow.keras.models import load_model
 
 from helpers import preprocess_image
 
-image_path = "full_scan_examples/example_0.png"
+image_path = "full_scan_examples/example_5.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
@@ -17,8 +17,8 @@ GREEN = (0, 255, 0)
 BLUE = (255, 200, 0)
 
 CLASS_NAMES = {
-    0: "Sharp",
-    1: "Dull",
+    0: "Dull",
+    1: "Sharp",
 }
 
 # Handle arguments
