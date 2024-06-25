@@ -1,0 +1,1 @@
+SQUARE_NM_SIZE = 6.5

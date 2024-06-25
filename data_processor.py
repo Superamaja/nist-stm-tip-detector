@@ -4,9 +4,18 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from tip_detector.helpers import extract_roi, find_contours, preprocess_image
+from config import SQUARE_NM_SIZE
+from tip_detector.helpers import (
+    extract_roi,
+    find_contours,
+    locate_brighthest_pixel,
+    merge_contours,
+    preprocess_image,
+)
 
 img_directory = "training_data"
+
+DEBUG = True
 
 example_fnames0 = []
 for file in os.listdir(img_directory):
@@ -44,27 +53,14 @@ for i, fname in enumerate(example_fnames):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     contours, img_contrast, edged_contrast = find_contours(img, 2)
 
-    x, y, w, h = 0, 0, 0, 0
+    x1, y1, x2, y2 = 0, 0, 0, 0
     if len(contours) > 1:
-        # Merge multiple contours into one by combining their furthest points
-        least_x, least_y, largest_w, largest_h = cv2.boundingRect(contours[0])
-        for cnt in contours[1:]:
-            x, y, w, h = cv2.boundingRect(cnt)
-            if x < least_x:
-                largest_w += least_x - x
-                least_x = x
-            if y < least_y:
-                largest_h += least_y - y
-                least_y = y
-            if x + w > least_x + largest_w:
-                largest_w = x + w - least_x
-            if y + h > least_y + largest_h:
-                largest_h = y + h - least_y
-
-        x, y, w, h = least_x, least_y, largest_w, largest_h
+        x1, y1, x2, y2 = merge_contours(contours)
 
     elif len(contours) == 1:
-        x, y, w, h = cv2.boundingRect(contours[0])
+        x1, y1, w, h = cv2.boundingRect(contours[0])
+        x2 = x1 + w
+        y2 = y1 + h
     else:
         print(f"No contours found for {fname}")
         cv2.imshow("Scan", img)
@@ -74,35 +70,63 @@ for i, fname in enumerate(example_fnames):
         continue
 
     # Extract the region of interest
-    roi, x, y, square_size = extract_roi(gray, x, y, w, h)
+    roi, x, y, square_size = extract_roi(gray, x1, y1, x2, y2)
     if roi.shape[0] == 0 or roi.shape[1] == 0:
         continue
-    roi_preprocessed = preprocess_image(roi)
-    cv2.rectangle(
-        img,
-        (x, y),
-        (x + square_size, y + square_size),
-        (0, 255, 0),
-        0,
+    x_b, y_b = locate_brighthest_pixel(roi)
+    with open("roi.txt", "w") as f:
+        for row in roi:
+            f.write(" ".join([str(x) for x in row]) + "\n")
+    cv2.circle(
+        roi,
+        (x_b, y_b),
+        1,
+        (0, 0, 255),
+        -1,
     )
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
+    roi_preprocessed = preprocess_image(roi)
+
+    if DEBUG:
         cv2.rectangle(
-            img2,
+            img,
             (x, y),
-            (x + w, y + h),
-            (0, 255, 0),
+            (x + square_size, y + square_size),
+            (255, 255, 0),
             0,
         )
+        cv2.rectangle(
+            img,
+            (x1, y1),
+            (x2, y2),
+            (0, 255, 255),
+            0,
+        )
+        cv2.circle(
+            img,
+            (x + x_b, y + y_b),
+            1,
+            (0, 0, 255),
+            -1,
+        )
+        for cnt in contours:
+            x, y, w, h = cv2.boundingRect(cnt)
+            cv2.rectangle(
+                img2,
+                (x, y),
+                (x + w, y + h),
+                (0, 255, 255),
+                0,
+            )
 
-    print()
-    print(f"Image: {fname}")
-    print(f"Tip Quality: {features.iloc[i]['tipQuality']}")
-    print(f"Scale: {features.iloc[i]['scaleX']} x {features.iloc[i]['scaleY']}")
-    cv2.imshow("Scan", img)
-    cv2.imshow("All Contours", img2)
-    cv2.imshow("Contrast", img_contrast)
-    cv2.imshow("Edges", edged_contrast)
-    cv2.imshow("ROI", roi_preprocessed[0])
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+        print()
+        print(f"Image: {fname}")
+        print(f"Tip Quality: {features.iloc[i]['tipQuality']}")
+        print(f"Resolution: {img.shape[0]} x {img.shape[1]}")
+        print(f"Scale: {features.iloc[i]['scaleX']} x {features.iloc[i]['scaleY']}")
+        cv2.imshow("Scan", img)
+        cv2.imshow("All Contours", img2)
+        cv2.imshow("Contrast", img_contrast)
+        cv2.imshow("Edges", edged_contrast)
+        cv2.imshow("ROI", roi_preprocessed[0])
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
