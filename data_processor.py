@@ -11,6 +11,7 @@ from tip_detector.helpers import (
     locate_brighthest_pixel,
     merge_contours,
     preprocess_image,
+    resize_roi,
 )
 
 img_directory = "training_data"
@@ -70,27 +71,47 @@ for i, fname in enumerate(example_fnames):
         continue
 
     # Extract the region of interest
-    roi, x, y, square_size = extract_roi(gray, x1, y1, x2, y2)
+    roi, x_roi, y_roi, square_size = extract_roi(gray, x1, y1, x2, y2)
     if roi.shape[0] == 0 or roi.shape[1] == 0:
         continue
+
+    # Find the brightest pixel in the ROI
     x_b, y_b = locate_brighthest_pixel(roi)
-    with open("roi.txt", "w") as f:
-        for row in roi:
-            f.write(" ".join([str(x) for x in row]) + "\n")
-    cv2.circle(
-        roi,
-        (x_b, y_b),
-        1,
-        (0, 0, 255),
-        -1,
-    )
+
+    # Calculator the size of the square in nm
+    nm_p_pixel = [
+        features.iloc[i]["scaleX"] / img.shape[1],
+        features.iloc[i]["scaleY"] / img.shape[0],
+    ]
+
+    # Adjust the size of the square to be SQUARE_NM_SIZE nm
+    # ! Assumes that the image is square
+    if nm_p_pixel[0] * roi.shape[0] < SQUARE_NM_SIZE:
+        roi, x_exp, y_exp, new_size = resize_roi(
+            gray, x_roi, y_roi, square_size, int(SQUARE_NM_SIZE / nm_p_pixel[0])
+        )
+    else:
+        # Creates a new roi and use the brightest pixel as the center of the new roi
+        roi, x_exp, y_exp, new_size = extract_roi(
+            gray,
+            x_b + x_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+            y_b + y_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+            x_b + x_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+            y_b + y_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+        )
+
     roi_preprocessed = preprocess_image(roi)
+
+    # Save the preprocessed image
+    if not os.path.exists("processed_data"):
+        os.makedirs("processed_data")
+    cv2.imwrite(f"processed_data/{fname.split('\\')[-1]}", roi_preprocessed[0] * 255)
 
     if DEBUG:
         cv2.rectangle(
             img,
-            (x, y),
-            (x + square_size, y + square_size),
+            (x_roi, y_roi),
+            (x_roi + square_size, y_roi + square_size),
             (255, 255, 0),
             0,
         )
@@ -101,9 +122,16 @@ for i, fname in enumerate(example_fnames):
             (0, 255, 255),
             0,
         )
+        cv2.rectangle(
+            img,
+            (x_exp, y_exp),
+            (x_exp + new_size, y_exp + new_size),
+            (0, 0, 255),
+            0,
+        )
         cv2.circle(
             img,
-            (x + x_b, y + y_b),
+            (x_roi + x_b, y_roi + y_b),
             1,
             (0, 0, 255),
             -1,
@@ -123,6 +151,7 @@ for i, fname in enumerate(example_fnames):
         print(f"Tip Quality: {features.iloc[i]['tipQuality']}")
         print(f"Resolution: {img.shape[0]} x {img.shape[1]}")
         print(f"Scale: {features.iloc[i]['scaleX']} x {features.iloc[i]['scaleY']}")
+        print(f"ROI Resolution: {roi.shape[0]} x {roi.shape[1]}")
         cv2.imshow("Scan", img)
         cv2.imshow("All Contours", img2)
         cv2.imshow("Contrast", img_contrast)

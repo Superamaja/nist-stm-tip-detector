@@ -63,6 +63,24 @@ def extract_roi(img, x1, y1, x2, y2):
     return img[y : y + square_size, x : x + square_size], x, y, square_size
 
 
+def resize_roi(img, x, y, square_size, new_size):
+    """
+    Expands the region of interest to the new size.
+    """
+    x_new = x - (new_size - square_size) // 2
+    y_new = y - (new_size - square_size) // 2
+    if x_new < 0:
+        x_new = 0
+    if y_new < 0:
+        y_new = 0
+    return (
+        img[y_new : y_new + new_size, x_new : x_new + new_size],
+        x_new,
+        y_new,
+        new_size,
+    )
+
+
 def locate_brighthest_pixel(img):
     """
     Locates the brightest pixel in the image.
