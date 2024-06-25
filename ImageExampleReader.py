@@ -268,9 +268,13 @@ model.save(f"{folder_directory}/model.h5")
 with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
         f"""
+--Config Info--
+Pixel Size: {image_px}
+Augmentation Setting: {xforms_per_image}
+        
 --Training Info--
 Epochs: {len(history.history["acc"])}
-Batch Size: {batch_size}
+
 Steps per Epoch: {ceil(len(train_labels)/batch_size)}
 Validation Steps: {ceil(len(validation_labels)/batch_size)}
 
