@@ -17,10 +17,10 @@ from tensorflow.keras.preprocessing.image import (
     load_img,
 )
 
-example_dirs = ["training_data"]
+example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
-image_px = 75
+image_px = 50
 xforms_per_image = 1
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 

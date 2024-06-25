@@ -2,14 +2,15 @@ import sys
 
 import cv2
 import numpy as np
-from helpers import extract_roi, find_contours, preprocess_image
 from tensorflow.keras.models import load_model
+
+from helpers import extract_roi, find_contours, preprocess_image
 
 image_path = "full_scan_examples/full_scan_example2.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
-SHARP_PREDICTION_THRESHOLD = 0.00001  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise blunt
+SHARP_PREDICTION_THRESHOLD = 0.5  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise blunt
 
 RED = (50, 50, 255)
 GREEN = (0, 255, 0)
@@ -26,8 +27,8 @@ if len(sys.argv) > 1:
 
 # Load the pre-trained model
 print("loading model")
-model = load_model("stm_model.h5")
-# model = load_model("model.h5")
+# model = load_model("stm_model.h5")
+model = load_model("model.h5")
 
 
 # Load the image file
@@ -49,6 +50,7 @@ for cnt in contours:
         if roi.shape[0] == 0 or roi.shape[1] == 0:
             continue
         roi_preprocessed = preprocess_image(roi)
+        print(roi.shape, roi_preprocessed.shape)
         prediction = model.predict(roi_preprocessed)[0][0]
         # cls = np.argmax(prediction)
         cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0

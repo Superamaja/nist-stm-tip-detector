@@ -16,7 +16,7 @@ from tip_detector.helpers import (
 
 img_directory = "training_data"
 
-DEBUG = True
+DEBUG = False
 
 example_fnames0 = []
 for file in os.listdir(img_directory):
@@ -44,11 +44,11 @@ features = pd.read_csv(os.path.join(img_directory, "features.csv"), sep=",")
 
 
 for i, fname in enumerate(example_fnames):
-    if not (
-        features.iloc[i]["defectType"] == "DB" and features.iloc[i]["sampleBias"] > 0
-    ):
-        print(f"Skipping {fname}")
-        continue
+    # if not (
+    #     features.iloc[i]["defectType"] == "DB" and features.iloc[i]["sampleBias"] > 0
+    # ):
+    #     print(f"Skipping {fname}")
+    #     continue
     img = cv2.imread(fname)
     img2 = img.copy()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -106,6 +106,10 @@ for i, fname in enumerate(example_fnames):
     if not os.path.exists("processed_data"):
         os.makedirs("processed_data")
     cv2.imwrite(f"processed_data/{fname.split('\\')[-1]}", roi_preprocessed[0] * 255)
+
+    # Clone the csv over
+    if not os.path.exists("processed_data/features.csv"):
+        features.to_csv("processed_data/features.csv", index=False)
 
     if DEBUG:
         cv2.rectangle(
