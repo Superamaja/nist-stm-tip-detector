@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 import cv2
 import numpy as np
@@ -17,12 +18,17 @@ from tip_detector.helpers import (
 
 img_directory = "training_data"
 
-DEBUG = True
+DEBUG = False
 
 # Load the configuration file
 with open("config.json") as f:
     config = json.load(f)
 SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
+
+# Check for system arguments
+if len(sys.argv) > 1:
+    if "-d" in sys.argv:
+        DEBUG = True
 
 
 fnames = get_ordered_fnames(img_directory)
