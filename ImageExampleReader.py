@@ -7,10 +7,10 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from tensorflow.keras import Sequential, layers
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.preprocessing.image import (
+from tensorflow.keras import Sequential, layers  # type: ignore
+from tensorflow.keras.callbacks import EarlyStopping  # type: ignore
+from tensorflow.keras.optimizers import Adam  # type: ignore
+from tensorflow.keras.preprocessing.image import (  # type: ignore
     ImageDataGenerator,
     apply_affine_transform,
     img_to_array,
