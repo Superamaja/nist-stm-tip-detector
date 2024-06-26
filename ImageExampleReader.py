@@ -1,3 +1,4 @@
+import json
 import os
 import random
 import time
@@ -26,6 +27,12 @@ image_px = 75
 xforms_per_image = 1
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
+
+# Load config file
+with open("config.json") as f:
+    config = json.load(f)
+
+SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
 # Get the iteration number for the model training
 if os.path.exists("models/iteration.txt"):
@@ -269,6 +276,7 @@ with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
         f"""
 --Config Info--
+Square NM Size: {SQUARE_NM_SIZE}
 Pixel Size: {image_px}
 Augmentation Setting: {xforms_per_image}
         
