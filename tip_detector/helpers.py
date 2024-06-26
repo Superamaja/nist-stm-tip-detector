@@ -1,13 +1,28 @@
+import json
+import os
+
 import cv2
 import numpy as np
+
+# Load config file
+if os.path.exists("../config.json"):
+    with open("../config.json") as f:
+        config = json.load(f)
+else:
+    with open("config.json") as f:
+        config = json.load(f)
+
+SQUARE_PIXEL_SIZE = config["SQUARE_PIXEL_SIZE"]
 
 
 def preprocess_image(roi):
     """
     Preprocess the image before feeding it to the model.
     """
-    if roi.shape[0] != 75 or roi.shape[1] != 75:
-        roi = cv2.resize(roi, (75, 75), interpolation=cv2.INTER_LINEAR)
+    if roi.shape[0] != SQUARE_PIXEL_SIZE or roi.shape[1] != SQUARE_PIXEL_SIZE:
+        roi = cv2.resize(
+            roi, (SQUARE_PIXEL_SIZE, SQUARE_PIXEL_SIZE), interpolation=cv2.INTER_LINEAR
+        )
     roi = cv2.normalize(roi, None, 0, 255, cv2.NORM_MINMAX)
     roi = roi.astype("float32") / 255.0
     roi = np.expand_dims(roi, axis=-1)

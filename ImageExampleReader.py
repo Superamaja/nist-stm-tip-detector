@@ -23,7 +23,6 @@ from helpers import get_ordered_fnames
 example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
-image_px = 75
 xforms_per_image = 1
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
@@ -33,6 +32,7 @@ with open("config.json") as f:
     config = json.load(f)
 
 SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
+SQUARE_PIXEL_SIZE = config["SQUARE_PIXEL_SIZE"]
 
 
 # Allow for user notes to be added to logs
@@ -81,7 +81,7 @@ for example_dir in example_dirs:
 img_data = []
 
 for fname in overall_fnames:
-    img = load_img(fname, target_size=(image_px, image_px), color_mode="grayscale")
+    img = load_img(fname, target_size=(SQUARE_PIXEL_SIZE, SQUARE_PIXEL_SIZE), color_mode="grayscale")
     img_data.append(img_to_array(img))  # numpy array
 
 
@@ -226,7 +226,7 @@ validation_generator = val_datagen.flow(
 # build the convnet
 model = Sequential(
     [
-        layers.Input(shape=(image_px, image_px, 1)),
+        layers.Input(shape=(SQUARE_PIXEL_SIZE, SQUARE_PIXEL_SIZE, 1)),
         layers.Conv2D(30, 5, activation="relu"),
         layers.Conv2D(40, 5, activation="relu"),
         layers.MaxPooling2D((2), strides=(2, 2)),
@@ -286,7 +286,7 @@ with open(f"{folder_directory}/logs.txt", "w") as f:
         
 --Config Info--
 Square NM Size: {SQUARE_NM_SIZE}
-Pixel Size: {image_px}
+Pixel Size: {SQUARE_PIXEL_SIZE}
 Augmentation Setting: {xforms_per_image}
         
 --Training Info--
