@@ -11,12 +11,12 @@ with open("../config.json") as f:
 
 SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
-image_path = "full_scan_examples/full_scan_example1.png"
+image_path = "full_scan_examples/20230131-180445_20211029 W31 P14--STM_AtomManipulation--128_2.r90.45nmx45nm.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
 SHARP_PREDICTION_THRESHOLD = 0.5  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
-DEBUG = False
+DEBUG = True
 
 RED = (50, 50, 255)
 GREEN = (0, 255, 0)
@@ -51,7 +51,7 @@ total_bonds = 0
 total_cls = {0: 0, 1: 0}
 
 # TODO: Calculate nm/pixel
-nm_p_pixel = 45 / img.shape[1]
+nm_p_pixel = 40 / img.shape[1]
 
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
@@ -98,6 +98,7 @@ for cnt in contours:
         total_cls[cls] += 1
 
         if DEBUG:
+            cv2.imshow("Scan", img)
             cv2.imshow("ROI2", roi_preprocessed[0])
             cv2.moveWindow("ROI2", 75, 400)
             cv2.waitKey(0)
