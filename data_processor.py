@@ -26,15 +26,20 @@ with open("config.json") as f:
 SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
 # Check for system arguments
+start_index = 0
 if len(sys.argv) > 1:
     if "-d" in sys.argv:
         DEBUG = True
+    if "-s" in sys.argv:
+        start_index = int(sys.argv[sys.argv.index("-s") + 1])
 
 
 fnames = get_ordered_fnames(img_directory)
 features = pd.read_csv(os.path.join(img_directory, "features.csv"), sep=",")
 
 for i, fname in enumerate(fnames):
+    if i < start_index:
+        continue
     # if not (
     #     features.iloc[i]["defectType"] == "DB" and features.iloc[i]["sampleBias"] > 0
     # ):
