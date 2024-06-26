@@ -34,6 +34,12 @@ with open("config.json") as f:
 
 SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
+
+# Allow for user notes to be added to logs
+user_notes = input("User Notes: ")
+if user_notes:
+    user_notes = "\n".join(user_notes.split(r"\n"))
+
 # Get the iteration number for the model training
 if os.path.exists("models/iteration.txt"):
     with open("models/iteration.txt", "r") as f:
@@ -275,6 +281,9 @@ model.save(f"{folder_directory}/model.h5")
 with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
         f"""
+--User Notes--
+{user_notes}
+        
 --Config Info--
 Square NM Size: {SQUARE_NM_SIZE}
 Pixel Size: {image_px}
