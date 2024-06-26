@@ -15,8 +15,8 @@ image_path = "full_scan_examples/full_scan_example1.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
-SHARP_PREDICTION_THRESHOLD = 0.07  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
-DEBUG = True
+SHARP_PREDICTION_THRESHOLD = 0.5  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
+DEBUG = False
 
 RED = (50, 50, 255)
 GREEN = (0, 255, 0)
@@ -107,8 +107,8 @@ decision = 0 if total_cls[0] > total_cls[1] else 1
 percent = total_cls[decision] / total_bonds * 100
 
 print(f"Total bonds: {total_bonds}")
-print(f"Total sharp: {total_cls[0]}")
-print(f"Total blunt: {total_cls[1]}")
+print(f"Total sharp: {total_cls[1]}")
+print(f"Total dull: {total_cls[0]}")
 print(f"Overall Decision: {CLASS_NAMES[decision]}")
 print(f"{CLASS_NAMES[decision]} Percentage: {percent:.4f}%")
 
