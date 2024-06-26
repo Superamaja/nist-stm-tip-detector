@@ -1,10 +1,10 @@
+import json
 import os
 
 import cv2
 import numpy as np
 import pandas as pd
 
-from config import SQUARE_NM_SIZE
 from helpers import get_ordered_fnames
 from tip_detector.helpers import (
     extract_roi,
@@ -18,6 +18,11 @@ from tip_detector.helpers import (
 img_directory = "training_data"
 
 DEBUG = True
+
+# Load the configuration file
+with open("config.json") as f:
+    config = json.load(f)
+SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
 
 fnames = get_ordered_fnames(img_directory)

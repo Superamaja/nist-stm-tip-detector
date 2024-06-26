@@ -1,1 +1,0 @@
-SQUARE_NM_SIZE = 2

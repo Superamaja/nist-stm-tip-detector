@@ -1,16 +1,21 @@
+import json
 import sys
 
 import cv2
-import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model  # type: ignore
 
 from helpers import extract_roi, find_contours, preprocess_image, resize_roi
+
+with open("../config.json") as f:
+    config = json.load(f)
+
+SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
 image_path = "full_scan_examples/full_scan_example1.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
-SHARP_PREDICTION_THRESHOLD = 0.1  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
+SHARP_PREDICTION_THRESHOLD = 0.07  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
 DEBUG = True
 
 RED = (50, 50, 255)
@@ -45,15 +50,16 @@ if len(contours) == 0:
 total_bonds = 0
 total_cls = {0: 0, 1: 0}
 
+# TODO: Calculate nm/pixel
 nm_p_pixel = 45 / img.shape[1]
-# 1: 45nm x 45nm
-# 2:
 
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
     if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
         roi, x, y, square_size = extract_roi(gray, x, y, x + w, y + h)
-        roi, x, y, new_size = resize_roi(gray, x, y, square_size, int(2 / nm_p_pixel))
+        roi, x, y, new_size = resize_roi(
+            gray, x, y, square_size, int(SQUARE_NM_SIZE / nm_p_pixel)
+        )
         if roi.shape[0] == 0 or roi.shape[1] == 0:
             continue
         roi_preprocessed = preprocess_image(roi)
