@@ -92,7 +92,9 @@ for i, fname in enumerate(fnames):
     # Save the preprocessed image
     if not os.path.exists("processed_data"):
         os.makedirs("processed_data")
-    cv2.imwrite(f"processed_data/{fname.split('\\')[-1]}", roi_preprocessed[0] * 255)
+    image_name = fname.split("\\")[-1]
+    cv2.imwrite(f"processed_data/{image_name}", roi_preprocessed[0] * 255)
+    
 
     # Clone the csv over
     features.to_csv("processed_data/features.csv", index=False)
