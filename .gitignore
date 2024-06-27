@@ -1,4 +1,8 @@
 *_data/
 models/
+full_scan_examples/
+
+*.h5
+*.keras
 
 __pycache__/
