@@ -32,6 +32,8 @@ if len(sys.argv) > 1:
         DEBUG = True
     if "-s" in sys.argv:
         start_index = int(sys.argv[sys.argv.index("-s") + 1])
+    if "-i" in sys.argv:
+        img_directory = sys.argv[sys.argv.index("-i") + 1]
 
 
 fnames = get_ordered_fnames(img_directory)
