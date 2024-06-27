@@ -64,9 +64,16 @@ def merge_contours(contours):
     return left_x, top_y, right_x, bottom_y
 
 
-def extract_roi(img, x1, y1, x2, y2):
+def extract_roi(img: np.ndarray, x1: int, y1: int, x2: int, y2: int):
     """
     Extracts the region of interest from the image.
+    
+    Parameters:
+        img (ndarray): Image to extract the region of interest from
+        x1 (int): X coordinate of the top left corner of the square
+        y1 (int): Y coordinate of the top left corner of the square
+        x2 (int): X coordinate of the bottom right corner of the square
+        y2 (int): Y coordinate of the bottom right corner of the square
     """
     # Calculate the size of the square
     square_size = max(x2 - x1, y2 - y1)
@@ -89,8 +96,8 @@ def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int)
 
     Parameters:
         img (ndarray): Image to extract the region of interest from
-        x (int): X coordinate of the top left corner of the square
-        y (int): Y coordinate of the top left corner of the square
+        x (int): X coordinate of the top left corner of the original square
+        y (int): Y coordinate of the top left corner of the original square
         square_size (int): Current size of the square
         new_size (int): New size of the square
     """
