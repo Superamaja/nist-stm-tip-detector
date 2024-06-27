@@ -21,7 +21,7 @@ image_path = "full_scan_examples/full_scan_example1.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
-SHARP_PREDICTION_THRESHOLD = 0.001  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
+SHARP_PREDICTION_THRESHOLD = 0.5  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
 DEBUG = False
 
 RED = (50, 50, 255)

@@ -14,12 +14,18 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img  # type:
 
 from helpers import get_ordered_fnames
 
+# Parameters
 example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
-enable_augmentation = True
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
+# Augmentation parameters
+enable_augmentation = True
+rotation_range = 360
+shear_range = 0.15
+zoom_range = 0.05
+horizontal_flip = True
 
 # Load config file
 with open("config.json") as f:
@@ -112,13 +118,40 @@ def augment_image(image):
     # Convert image to float32 and scale to [0, 1]
     image = tf.image.convert_image_dtype(image, tf.float32)
 
-    # Generate 8 augmented images: 4 rotations and 4 flips
-    # TODO: Zoom and brightness
     augmented_images = []
-    for i in range(4):
-        rotated_image = tf.image.rot90(image, k=i)
-        augmented_images.append(rotated_image)
-        augmented_images.append(tf.image.flip_left_right(rotated_image))
+    if enable_augmentation:
+        # Generate 8 augmented images: 4 rotations and 4 flips
+        # for i in range(4):
+        #     rotated_image = tf.image.rot90(image, k=i)
+        #     augmented_images.append(rotated_image)
+        #     augmented_images.append(tf.image.flip_left_right(rotated_image))
+
+        # Rotate image
+        if rotation_range:
+            angle = tf.random.uniform([], -rotation_range, rotation_range) * (
+                tf.constant(3.14159) / 180.0
+            )
+            image = tf.image.rot90(image, k=tf.cast(angle, tf.int32))
+
+        # Shear image
+        if shear_range:
+            shear_x = tf.random.uniform([], -shear_range, shear_range)
+            shear_y = tf.random.uniform([], -shear_range, shear_range)
+            shear_matrix = tf.constant(
+                [[1.0, shear_x, 0.0], [shear_y, 1.0, 0.0], [0.0, 0.0, 1.0]]
+            )
+            image = tf.keras.preprocessing.image.apply_affine_transform(
+                image, shear=shear_matrix
+            )
+
+        # Zoom image
+        if zoom_range:
+            zoom_factor = tf.random.uniform([], 1 - zoom_range, 1 + zoom_range)
+            image = tf.image.central_crop(image, central_fraction=zoom_factor)
+
+        # Flip image horizontally
+        if horizontal_flip:
+            image = tf.image.random_flip_left_right(image)
 
     return augmented_images if enable_augmentation else [image]
 
