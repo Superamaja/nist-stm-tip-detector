@@ -17,7 +17,6 @@ from helpers import get_ordered_fnames
 example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
-xforms_per_image = 1
 enable_augmentation = True
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
@@ -49,12 +48,7 @@ def validation_split_list(in_list, validation_split=0):
     v_list = []
     t_list = []
 
-    split_idx = (
-        len(in_list)
-        * validation_split
-        * xforms_per_image
-        / (validation_split * (xforms_per_image - 1) + 1)
-    )
+    split_idx = int(len(in_list) * validation_split)
 
     print("validation split idx: " + str(split_idx))
 
@@ -253,7 +247,7 @@ with open(f"{folder_directory}/logs.txt", "w") as f:
 --Config Info--
 Square NM Size: {SQUARE_NM_SIZE}
 Pixel Size: {SQUARE_PIXEL_SIZE}
-Augmentation Setting: {xforms_per_image}
+Augmentation: {enable_augmentation}
 Batch Size: {batch_size}
         
 --Training Info--
