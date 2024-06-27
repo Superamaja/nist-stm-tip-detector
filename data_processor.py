@@ -77,21 +77,15 @@ for i, fname in enumerate(fnames):
         features.iloc[i]["scaleY"] / img.shape[0],
     ]
 
-    # Adjust the size of the square to be SQUARE_NM_SIZE nm
+    # Creates a new roi and use the brightest pixel as the center of the new roi
     # ! Assumes that the image is square
-    if nm_p_pixel[0] * roi.shape[0] < SQUARE_NM_SIZE:
-        roi, x_exp, y_exp, new_size = resize_roi(
-            gray, x_roi, y_roi, square_size, int(SQUARE_NM_SIZE / nm_p_pixel[0])
-        )
-    else:
-        # Creates a new roi and use the brightest pixel as the center of the new roi
-        roi, x_exp, y_exp, new_size = extract_roi(
-            gray,
-            x_b + x_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-            y_b + y_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-            x_b + x_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-            y_b + y_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-        )
+    roi, x_exp, y_exp, new_size = extract_roi(
+        gray,
+        x_b + x_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+        y_b + y_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+        x_b + x_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+        y_b + y_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+    )
 
     roi_preprocessed = preprocess_image(roi)
 
