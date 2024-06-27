@@ -83,15 +83,16 @@ def extract_roi(img, x1, y1, x2, y2):
     return img[y : y + square_size, x : x + square_size], x, y, square_size
 
 
-def resize_roi(img, x, y, square_size, new_size):
+def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int):
     """
     Expands the region of interest to the new size.
 
-    img: Image to extract the region of interest from
-    x: X coordinate of the top left corner of the square
-    y: Y coordinate of the top left corner of the square
-    square_size: Current size of the square
-    new_size: New size of the square
+    Parameters:
+        img (ndarray): Image to extract the region of interest from
+        x (int): X coordinate of the top left corner of the square
+        y (int): Y coordinate of the top left corner of the square
+        square_size (int): Current size of the square
+        new_size (int): New size of the square
     """
     x_new = x - (new_size - square_size) // 2
     y_new = y - (new_size - square_size) // 2
