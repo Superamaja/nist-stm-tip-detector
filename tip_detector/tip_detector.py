@@ -4,7 +4,13 @@ import sys
 import cv2
 from tensorflow.keras.models import load_model  # type: ignore
 
-from helpers import extract_roi, find_contours, preprocess_image, resize_roi
+from helpers import (
+    extract_roi,
+    find_contours,
+    locate_brighthest_pixel,
+    preprocess_image,
+    resize_roi,
+)
 
 with open("../config.json") as f:
     config = json.load(f)
@@ -63,6 +69,13 @@ for cnt in contours:
         roi, x, y, new_size = resize_roi(
             gray, x, y, square_size, int(SQUARE_NM_SIZE / nm_p_pixel)
         )
+
+        x_b, y_b = locate_brighthest_pixel(roi)
+
+        roi, x, y, new_size = resize_roi(
+            gray, x_b + x - new_size // 2, y_b + y - new_size // 2, new_size, new_size
+        )
+
         if roi.shape[0] == 0 or roi.shape[1] == 0:
             continue
         roi_preprocessed = preprocess_image(roi)
