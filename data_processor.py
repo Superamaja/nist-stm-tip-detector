@@ -42,11 +42,6 @@ features = pd.read_csv(os.path.join(img_directory, "features.csv"), sep=",")
 for i, fname in enumerate(fnames):
     if i < start_index:
         continue
-    # if not (
-    #     features.iloc[i]["defectType"] == "DB" and features.iloc[i]["sampleBias"] > 0
-    # ):
-    #     print(f"Skipping {fname}")
-    #     continue
     img = cv2.imread(fname)
     img2 = img.copy()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
