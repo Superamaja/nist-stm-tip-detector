@@ -86,6 +86,12 @@ def extract_roi(img, x1, y1, x2, y2):
 def resize_roi(img, x, y, square_size, new_size):
     """
     Expands the region of interest to the new size.
+
+    img: Image to extract the region of interest from
+    x: X coordinate of the top left corner of the square
+    y: Y coordinate of the top left corner of the square
+    square_size: Current size of the square
+    new_size: New size of the square
     """
     x_new = x - (new_size - square_size) // 2
     y_new = y - (new_size - square_size) // 2
