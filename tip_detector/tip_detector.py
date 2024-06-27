@@ -11,12 +11,12 @@ with open("../config.json") as f:
 
 SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
 
-image_path = "full_scan_examples/20230131-180445_20211029 W31 P14--STM_AtomManipulation--128_2.r90.45nmx45nm.png"
+image_path = "full_scan_examples/full_scan_example1.png"
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
-SHARP_PREDICTION_THRESHOLD = 0.5  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
-DEBUG = True
+SHARP_PREDICTION_THRESHOLD = 0.001  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
+DEBUG = False
 
 RED = (50, 50, 255)
 GREEN = (0, 255, 0)
@@ -29,7 +29,10 @@ CLASS_NAMES = {
 
 # Handle arguments
 if len(sys.argv) > 1:
-    image_path = sys.argv[1]
+    if sys.argv[1] == "-d":
+        DEBUG = True
+    if "-i" in sys.argv:
+        image_path = sys.argv[sys.argv.index("-i") + 1]
 
 # Load the pre-trained model
 print("loading model")
