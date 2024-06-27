@@ -104,8 +104,7 @@ for i, fname in enumerate(fnames):
     cv2.imwrite(f"processed_data/{fname.split('\\')[-1]}", roi_preprocessed[0] * 255)
 
     # Clone the csv over
-    if not os.path.exists("processed_data/features.csv"):
-        features.to_csv("processed_data/features.csv", index=False)
+    features.to_csv("processed_data/features.csv", index=False)
 
     if DEBUG:
         cv2.rectangle(
