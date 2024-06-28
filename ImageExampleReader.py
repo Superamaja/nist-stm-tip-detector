@@ -10,7 +10,12 @@ import tensorflow as tf
 from tensorflow.keras import Sequential, layers  # type: ignore
 from tensorflow.keras.callbacks import EarlyStopping  # type: ignore
 from tensorflow.keras.optimizers import Adam  # type: ignore
-from tensorflow.keras.preprocessing.image import img_to_array, load_img  # type: ignore
+from tensorflow.keras.preprocessing.image import (  # type: ignore
+    ImageDataGenerator,
+    apply_affine_transform,
+    img_to_array,
+    load_img,
+)
 
 from helpers import get_ordered_fnames
 
@@ -18,14 +23,9 @@ from helpers import get_ordered_fnames
 example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
+xforms_per_image = 1
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
-# Augmentation parameters
-enable_augmentation = True
-rotation_range = 360
-shear_range = 0.15
-zoom_range = 0.05
-horizontal_flip = True
 
 # Load config file
 with open("config.json") as f:
@@ -111,79 +111,12 @@ sharp_indexes = db_sharp_indexes.tolist()
 
 # --------------------------------------------------------------------------------------------------------
 # "standard" ML processing starts here
-
-
-# Function to apply the required augmentations
-def augment_image(image):
-    # Convert image to float32 and scale to [0, 1]
-    image = tf.image.convert_image_dtype(image, tf.float32)
-
-    augmented_images = []
-    if enable_augmentation:
-        # Generate 8 augmented images: 4 rotations and 4 flips
-        # for i in range(4):
-        #     rotated_image = tf.image.rot90(image, k=i)
-        #     augmented_images.append(rotated_image)
-        #     augmented_images.append(tf.image.flip_left_right(rotated_image))
-
-        # Rotate image
-        if rotation_range:
-            angle = tf.random.uniform([], -rotation_range, rotation_range) * (
-                tf.constant(3.14159) / 180.0
-            )
-            image = tf.image.rot90(image, k=tf.cast(angle, tf.int32))
-
-        # Shear image
-        if shear_range:
-            shear_x = tf.random.uniform([], -shear_range, shear_range)
-            shear_y = tf.random.uniform([], -shear_range, shear_range)
-            shear_matrix = tf.constant(
-                [[1.0, shear_x, 0.0], [shear_y, 1.0, 0.0], [0.0, 0.0, 1.0]]
-            )
-            image = tf.keras.preprocessing.image.apply_affine_transform(
-                image, shear=shear_matrix
-            )
-
-        # Zoom image
-        if zoom_range:
-            zoom_factor = tf.random.uniform([], 1 - zoom_range, 1 + zoom_range)
-            image = tf.image.central_crop(image, central_fraction=zoom_factor)
-
-        # Flip image horizontally
-        if horizontal_flip:
-            image = tf.image.random_flip_left_right(image)
-
-    return augmented_images if enable_augmentation else [image]
-
-
-# Convert numpy arrays to tf.data.Dataset
-def create_dataset(images, labels, batch_size, training=False):
-    dataset = tf.data.Dataset.from_tensor_slices((images, labels))
-
-    if training:
-        dataset = dataset.shuffle(buffer_size=len(images))
-
-    dataset = dataset.map(
-        lambda x, y: (tf.image.convert_image_dtype(x, tf.float32), y),
-        num_parallel_calls=tf.data.experimental.AUTOTUNE,
-    )
-
-    if training and enable_augmentation:
-        dataset = dataset.flat_map(
-            lambda x, y: tf.data.Dataset.from_tensor_slices((augment_image(x), [y] * 8))
-        )
-
-    dataset = dataset.batch(batch_size)
-    dataset = dataset.repeat()
-    dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
-
-    return dataset
-
-
+# "standard" ML processing starts here
 random.shuffle(dull_indexes)
 random.shuffle(sharp_indexes)
 
-# Validation split
+
+# validation split
 dull_indexes_v, dull_indexes_t = validation_split_list(
     dull_indexes, validation_split=vsplit
 )
@@ -194,12 +127,50 @@ sharp_indexes_v, sharp_indexes_t = validation_split_list(
 indexes_v = dull_indexes_v + sharp_indexes_v
 indexes_t = dull_indexes_t + sharp_indexes_t
 
-# Create the final validation and test arrays
-validation_images = np.array([img_data[i] for i in indexes_v])
-train_images = np.array([img_data[i] for i in indexes_t])
+
+# create the final validation and test arrays
+validation_images = []
+for i in indexes_v:
+    validation_images.append(img_data[i])
+
+validation_images = np.array(validation_images)
+
+# training images can be manually augmented here
+train_images = []
+for i in indexes_t:
+    # 8 transforms per image (xforms_per_image):
+    # 4x 90 degree rotations (incl. 0 deg), and horizontal flips of each
+
+    img = img_data[i]
+    train_images.append(img)
+
+    if xforms_per_image == 8:
+        flip_img = apply_affine_transform(img, zx=-1)
+        train_images.append(flip_img)
+
+        img = apply_affine_transform(img, theta=90)
+        train_images.append(img)
+        flip_img = apply_affine_transform(img, zx=-1)
+        train_images.append(flip_img)
+
+        img = apply_affine_transform(img, theta=90)
+        train_images.append(img)
+        flip_img = apply_affine_transform(img, zx=-1)
+        train_images.append(flip_img)
+
+        img = apply_affine_transform(img, theta=90)
+        train_images.append(img)
+        flip_img = apply_affine_transform(img, zx=-1)
+        train_images.append(flip_img)
+
+train_images = np.array(train_images)
+
 
 validation_labels = np.array([0] * len(dull_indexes_v) + [1] * len(sharp_indexes_v))
-train_labels = np.array([0] * len(dull_indexes_t) + [1] * len(sharp_indexes_t))
+train_labels = np.array(
+    [0] * len(dull_indexes_t) * xforms_per_image
+    + [1] * len(sharp_indexes_t) * xforms_per_image
+)
 
 print("validation labels: " + str(validation_labels.shape))
 print("validation images: " + str(validation_images.shape))
@@ -208,10 +179,28 @@ print("train labels: " + str(train_labels.shape))
 print("train images: " + str(train_images.shape))
 
 
-# Create tf.data.Dataset instances
-train_dataset = create_dataset(train_images, train_labels, batch_size, training=True)
-validation_dataset = create_dataset(
-    validation_images, validation_labels, batch_size, training=False
+if xforms_per_image == 1:
+    train_datagen = ImageDataGenerator(
+        rescale=1.0 / 255,
+        rotation_range=360,
+        shear_range=0.15,
+        zoom_range=0.05,
+        horizontal_flip=True,
+    )
+else:
+    train_datagen = ImageDataGenerator(
+        rescale=1.0 / 255, shear_range=0.1, zoom_range=0.05
+    )
+
+
+val_datagen = ImageDataGenerator(rescale=1.0 / 255)
+
+train_generator = train_datagen.flow(
+    train_images, y=train_labels, batch_size=batch_size
+)
+
+validation_generator = val_datagen.flow(
+    validation_images, y=validation_labels, batch_size=batch_size
 )
 
 # Build the convnet
@@ -241,17 +230,11 @@ early_stopping = EarlyStopping(
 )
 
 history = model.fit(
-    train_dataset,
-    validation_data=validation_dataset,
+    train_generator,
+    validation_data=validation_generator,
     epochs=500,
     verbose=1,
     callbacks=[early_stopping],
-    steps_per_epoch=(
-        (len(train_labels) * 8 // batch_size)
-        if enable_augmentation
-        else len(train_labels) // batch_size
-    ),
-    validation_steps=len(validation_labels) // batch_size,
 )
 
 
@@ -280,13 +263,13 @@ with open(f"{folder_directory}/logs.txt", "w") as f:
 --Config Info--
 Square NM Size: {SQUARE_NM_SIZE}
 Pixel Size: {SQUARE_PIXEL_SIZE}
-Augmentation: {enable_augmentation}
+Augmentation: {xforms_per_image}
 Batch Size: {batch_size}
         
 --Training Info--
 Epochs: {len(history.history["acc"])}
 
-Steps per Epoch: {(len(train_labels) * 8 // batch_size) if enable_augmentation else len(train_labels) // batch_size}
+Steps per Epoch: {len(train_labels) * xforms_per_image // batch_size}
 Validation Steps: {len(validation_labels) // batch_size}
 
 --Model Info--
