@@ -98,9 +98,6 @@ for i, fname in enumerate(fnames):
     image_name = fname.split("\\")[-1]
     cv2.imwrite(f"processed_data/{image_name}", roi_preprocessed[0] * 255)
 
-    # Clone the csv over
-    features.to_csv("processed_data/features.csv", index=False)
-
     if DEBUG:
         cv2.rectangle(
             img,
@@ -153,3 +150,13 @@ for i, fname in enumerate(fnames):
         cv2.imshow("ROI", roi_preprocessed[0])
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+# Delete any old/extra images that wasn't written over
+for fname in os.listdir("processed_data"):
+    if f"{img_directory}\\{fname}" not in fnames:
+        os.remove(f"processed_data/{fname}")
+        print(f"Deleted old file: {fname}")
+
+# Clone the csv over
+features.to_csv("processed_data/features.csv", index=False)
+print("Clone features.csv to processed_data/")
