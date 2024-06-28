@@ -12,12 +12,8 @@ from helpers import (
     resize_roi,
 )
 
-with open("../config.json") as f:
-    config = json.load(f)
-
-SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
-
 image_path = "full_scan_examples/full_scan_example1.png"
+scan_nm = 40
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
@@ -33,12 +29,20 @@ CLASS_NAMES = {
     1: "Sharp",
 }
 
+# Load config file
+with open("../config.json") as f:
+    config = json.load(f)
+
+SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
+
 # Handle arguments
 if len(sys.argv) > 1:
     if "-d" in sys.argv:
         DEBUG = True
     if "-i" in sys.argv:
         image_path = sys.argv[sys.argv.index("-i") + 1]
+    if "-nm" in sys.argv:
+        scan_nm = int(sys.argv[sys.argv.index("-nm") + 1])
 
 # Load the pre-trained model
 print("loading model")
@@ -59,8 +63,7 @@ if len(contours) == 0:
 total_bonds = 0
 total_cls = {0: 0, 1: 0}
 
-# TODO: Calculate nm/pixel
-nm_p_pixel = 7 / img.shape[1]
+nm_p_pixel = scan_nm / img.shape[1]
 
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
