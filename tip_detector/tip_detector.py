@@ -35,7 +35,7 @@ CLASS_NAMES = {
 
 # Handle arguments
 if len(sys.argv) > 1:
-    if sys.argv[1] == "-d":
+    if "-d" in sys.argv:
         DEBUG = True
     if "-i" in sys.argv:
         image_path = sys.argv[sys.argv.index("-i") + 1]
@@ -60,7 +60,7 @@ total_bonds = 0
 total_cls = {0: 0, 1: 0}
 
 # TODO: Calculate nm/pixel
-nm_p_pixel = 40 / img.shape[1]
+nm_p_pixel = 7 / img.shape[1]
 
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
