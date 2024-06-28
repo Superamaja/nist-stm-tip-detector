@@ -24,6 +24,8 @@ example_dirs = ["processed_data"]
 vsplit = 0.2
 batch_size = 16
 xforms_per_image = 1
+patience = 25
+
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
 
@@ -189,7 +191,11 @@ if xforms_per_image == 1:
     )
 else:
     train_datagen = ImageDataGenerator(
-        rescale=1.0 / 255, shear_range=0.1, zoom_range=0.05
+        rescale=1.0 / 255,
+        rotation_range=360,
+        shear_range=0.15,
+        zoom_range=0.05,
+        horizontal_flip=True,
     )
 
 
@@ -224,7 +230,7 @@ model.compile(
 
 early_stopping = EarlyStopping(
     monitor="val_loss",
-    patience=25,
+    patience=patience,
     restore_best_weights=True,
     min_delta=0.0001,
 )
@@ -265,6 +271,7 @@ Square NM Size: {SQUARE_NM_SIZE}
 Pixel Size: {SQUARE_PIXEL_SIZE}
 Augmentation: {xforms_per_image}
 Batch Size: {batch_size}
+Patience: {patience}
         
 --Training Info--
 Epochs: {len(history.history["acc"])}
