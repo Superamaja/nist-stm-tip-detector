@@ -65,6 +65,8 @@ total_cls = {0: 0, 1: 0}
 
 nm_p_pixel = scan_nm / img.shape[1]
 
+brightest_locations = set()
+
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
     if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
@@ -74,6 +76,9 @@ for cnt in contours:
         )
 
         x_b, y_b = locate_brighthest_pixel(roi)
+        if (x_b + x, y_b + y) in brightest_locations:
+            continue
+        brightest_locations.add((x_b + x, y_b + y))
 
         roi, x, y, new_size = resize_roi(
             gray, x_b + x - new_size // 2, y_b + y - new_size // 2, new_size, new_size
