@@ -42,7 +42,7 @@ if len(sys.argv) > 1:
     if "-i" in sys.argv:
         image_path = sys.argv[sys.argv.index("-i") + 1]
     if "-nm" in sys.argv:
-        scan_nm = int(sys.argv[sys.argv.index("-nm") + 1])
+        scan_nm = float(sys.argv[sys.argv.index("-nm") + 1])
 
 # Load the pre-trained model
 print("loading model")
