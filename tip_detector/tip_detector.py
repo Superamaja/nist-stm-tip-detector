@@ -57,7 +57,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
 # Process the image with different contrast levels
-contours, img_contrast, edged_contrast = find_contours(img, 1.5)
+contours, img_contrast, edged_contrast = find_contours(img, 0.6)
 if len(contours) == 0:
     contours, img_contrast, edged_contrast = find_contours(img, 1)
 
@@ -72,10 +72,7 @@ for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
     if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
         # Extract the ROI and resize it to a square
-        roi, x, y, square_size = extract_roi(gray, x, y, x + w, y + h)
-        roi, x, y, new_size = resize_roi(
-            gray, x, y, square_size, int(SQUARE_NM_SIZE / nm_p_pixel)
-        )
+        roi, x, y, _ = extract_roi(gray, x, y, x + w, y + h)     
 
         # Remove duplicates from brightness centering
         x_b, y_b = locate_brighthest_pixel(roi)
@@ -83,9 +80,8 @@ for cnt in contours:
             continue
         brightest_locations.add((x_b + x, y_b + y))
         
-        x_b, y_b = x_b + xy_shift[0], y_b + xy_shift[1]
-
-        # Create a new ROI with the brightest pixel as the center
+        # Create a new ROI with the brightest pixel as the center   
+        new_size = int(SQUARE_NM_SIZE / nm_p_pixel)
         roi, x, y, new_size = resize_roi(
             gray, x_b + x - new_size // 2, y_b + y - new_size // 2, new_size, new_size
         )
