@@ -14,6 +14,7 @@ from helpers import (
 
 image_path = "full_scan_examples/full_scan_example1.png"
 scan_nm = 40
+xy_shift = [0, 0]
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
@@ -79,6 +80,8 @@ for cnt in contours:
         if (x_b + x, y_b + y) in brightest_locations:
             continue
         brightest_locations.add((x_b + x, y_b + y))
+        
+        x_b, y_b = x_b + xy_shift[0], y_b + xy_shift[1]
 
         roi, x, y, new_size = resize_roi(
             gray, x_b + x - new_size // 2, y_b + y - new_size // 2, new_size, new_size
