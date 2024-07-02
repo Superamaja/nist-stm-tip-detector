@@ -5,6 +5,7 @@ import sys
 import cv2
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 from helpers import get_ordered_fnames
 from tip_detector.helpers import (
@@ -39,11 +40,16 @@ if len(sys.argv) > 1:
 fnames = get_ordered_fnames(img_directory)
 features = pd.read_csv(os.path.join(img_directory, "features.csv"), sep=",")
 
-for i, fname in enumerate(fnames):
+if DEBUG:
+    iterator = enumerate(fnames)
+else:
+    iterator = tqdm(enumerate(fnames), total=len(fnames))
+
+for i, fname in iterator:
     if i < start_index:
         continue
-    if not DEBUG:
-        print(fname)
+    # if not DEBUG:
+    #     print(fname)
 
     img = cv2.imread(fname)
     img2 = img.copy()
@@ -159,4 +165,4 @@ for fname in os.listdir("processed_data"):
 
 # Clone the csv over
 features.to_csv("processed_data/features.csv", index=False)
-print("Clone features.csv to processed_data/")
+print("Cloned features.csv to processed_data/")
