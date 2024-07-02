@@ -2,6 +2,7 @@ import json
 import sys
 
 import cv2
+import numpy as np
 from tensorflow.keras.models import load_model  # type: ignore
 
 from helpers import (
@@ -14,7 +15,7 @@ from helpers import (
 
 image_path = "full_scan_examples/full_scan_example1.png"
 scan_nm = 40
-xy_shift = [0, 0]
+cross_size = 1
 
 # Images 1, 2 use (6,6) with 0.01
 CONTOUR_MIN_SIZE = (6, 6)  # Minimum size of the contour to pass (width, height)
@@ -72,24 +73,33 @@ for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
     if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
         # Extract the ROI and resize it to a square
-        roi, x, y, _ = extract_roi(gray, x, y, x + w, y + h)     
+        roi, x, y, _ = extract_roi(gray, x, y, x + w, y + h)
+        new_size = int(SQUARE_NM_SIZE / nm_p_pixel)
 
         # Remove duplicates from brightness centering
         x_b, y_b = locate_brighthest_pixel(roi)
         if (x_b + x, y_b + y) in brightest_locations:
             continue
         brightest_locations.add((x_b + x, y_b + y))
-        
-        # Create a new ROI with the brightest pixel as the center   
-        new_size = int(SQUARE_NM_SIZE / nm_p_pixel)
-        roi, x, y, new_size = resize_roi(
-            gray, x_b + x - new_size // 2, y_b + y - new_size // 2, new_size, new_size
-        )
 
-        if roi.shape[0] == 0 or roi.shape[1] == 0:
-            continue
-        roi_preprocessed = preprocess_image(roi)
-        prediction = model.predict(roi_preprocessed)[0][0]
+        # Perform the cross check
+        cross_predictions = []
+        new_x = x + x_b - new_size // 2
+        new_y = y + y_b - new_size // 2
+        for direction in range(2):
+            for shift in range(-cross_size, cross_size + 1):
+                roi, x, y, new_size = resize_roi(
+                    gray,
+                    new_x + shift * direction,
+                    new_y + shift * (1 - direction),
+                    new_size,
+                    new_size,
+                )
+                if roi.shape[0] == 0 or roi.shape[1] == 0:
+                    continue
+                roi_preprocessed = preprocess_image(roi)
+                cross_predictions.append(model.predict(roi_preprocessed)[0][0])
+        prediction = np.max(cross_predictions)
         cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
         print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
 
