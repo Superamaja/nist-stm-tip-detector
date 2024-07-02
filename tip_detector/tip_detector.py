@@ -13,8 +13,7 @@ from helpers import (
     resize_roi,
 )
 
-image_path = "full_scan_examples/full_scan_example1.png"
-scan_nm = 40
+image_path = "full_scan_examples/default_2017Jun20-143916_STM-STM_AtomManipulation--4_1.___20nmx20nm___r45deg.png"
 cross_size = 1
 
 # Images 1, 2 use (6,6) with 0.01
@@ -43,8 +42,17 @@ if len(sys.argv) > 1:
         DEBUG = True
     if "-i" in sys.argv:
         image_path = sys.argv[sys.argv.index("-i") + 1]
-    if "-nm" in sys.argv:
-        scan_nm = float(sys.argv[sys.argv.index("-nm") + 1])
+
+
+# Attempt to detect the nm from the image path
+try:
+    temp_path = image_path
+    temp_path = temp_path.split("nmx")[1]
+    scan_nm = float(temp_path.split("nm")[0])
+    print(f"Detected scan size: {scan_nm} nm")
+except:
+    print("Could not detect scan size from the image path")
+    scan_nm = float(input("Enter the scan size in nm: "))
 
 # Load the pre-trained model
 print("loading model")
