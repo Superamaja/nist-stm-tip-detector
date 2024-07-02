@@ -57,7 +57,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
 # Process the image with different contrast levels
-contours, img_contrast, edged_contrast = find_contours(img, 0.6)
+contours, img_contrast, edged_contrast = find_contours(img, 1.5)
 if len(contours) == 0:
     contours, img_contrast, edged_contrast = find_contours(img, 1)
 
@@ -80,7 +80,6 @@ for cnt in contours:
         # Remove duplicates from brightness centering
         x_b, y_b = locate_brighthest_pixel(roi)
         if (x_b + x, y_b + y) in brightest_locations:
-            total_bonds -= 1
             continue
         brightest_locations.add((x_b + x, y_b + y))
         
