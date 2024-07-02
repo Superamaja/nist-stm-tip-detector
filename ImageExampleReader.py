@@ -26,8 +26,6 @@ batch_size = 16
 xforms_per_image = 1
 patience = 25
 
-folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
-
 FOLDER_EXTENSION = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
 # Load config file
@@ -175,15 +173,20 @@ print("validation images: " + str(validation_images.shape))
 print("train labels: " + str(train_labels.shape))
 print("train images: " + str(train_images.shape))
 
+generator_config = {
+    "rescale": 1.0 / 255,
+    "rotation_range": 2,
+    # "shear_range": 0.15,
+    "zoom_range": 0.1,
+    "horizontal_flip": True,
+    "width_shift_range": 0.02,
+    "height_shift_range": 0.02,
+    "fill_mode": "constant",
+    "cval": 0,
+}
 
 if xforms_per_image == 1:
-    train_datagen = ImageDataGenerator(
-        rescale=1.0 / 255,
-        rotation_range=360,
-        shear_range=0.15,
-        zoom_range=0.05,
-        horizontal_flip=True,
-    )
+    train_datagen = ImageDataGenerator(**generator_config)
 else:
     train_datagen = ImageDataGenerator(
         rescale=1.0 / 255,
@@ -257,8 +260,7 @@ model.save(f"{folder_directory}/model.h5")
 # create logs
 with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
-        f"""
---User Notes--
+        f"""--User Notes--
 {user_notes}
         
 --Config Info--
@@ -281,6 +283,9 @@ Model Final Training Accuracy: {history.history["acc"][-1]}
 Model Final Validation Accuracy: {history.history["val_acc"][-1]}
 Model Final Training Loss: {history.history["loss"][-1]}
 Model Final Validation Loss: {history.history["val_loss"][-1]}
+
+--Generator Config--
+{json.dumps(generator_config, indent=4)}
     """
     )
 
