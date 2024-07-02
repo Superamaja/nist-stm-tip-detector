@@ -28,6 +28,7 @@ patience = 25
 
 folder_extension = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
+FOLDER_EXTENSION = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
 # Load config file
 with open("config.json") as f:
@@ -99,9 +100,9 @@ for example_dir in example_dirs[1:]:
     )
 
 db_features = features.loc[features["defectType"] == "DB"]
-print("size: " + str(db_features.size))
+print("rows: " + str(db_features.shape[0]))
 db_features = db_features.loc[db_features["sampleBias"] > 0]
-print("size: " + str(db_features.size))
+print("rows: " + str(db_features.shape[0]))
 db_dull_features = db_features.loc[db_features["tipQuality"] == "dull"]
 db_sharp_features = db_features.loc[db_features["tipQuality"] == "sharp"]
 
@@ -131,13 +132,7 @@ indexes_t = dull_indexes_t + sharp_indexes_t
 
 
 # create the final validation and test arrays
-validation_images = []
-for i in indexes_v:
-    validation_images.append(img_data[i])
-
-validation_images = np.array(validation_images)
-
-# training images can be manually augmented here
+validation_images = np.array([img_data[i] for i in indexes_v])
 train_images = []
 for i in indexes_t:
     # 8 transforms per image (xforms_per_image):
@@ -250,7 +245,7 @@ if not os.path.exists("models"):
 with open("models/iteration.txt", "w") as f:
     f.write(str(iteration + 1))
 # Create the iteration folder
-folder_directory = f"models/{iteration} - {folder_extension}"
+folder_directory = f"models/{iteration} - {FOLDER_EXTENSION}"
 if not os.path.exists(folder_directory):
     os.makedirs(folder_directory)
 
