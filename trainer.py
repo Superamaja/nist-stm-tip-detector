@@ -17,7 +17,7 @@ from tensorflow.keras.preprocessing.image import (  # type: ignore
     load_img,
 )
 
-from helpers import get_ordered_fnames
+from trainer_helpers.helpers import get_ordered_fnames
 
 # Parameters
 example_dirs = ["processed_data"]

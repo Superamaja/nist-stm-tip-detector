@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from helpers import get_ordered_fnames
+from trainer_helpers.helpers import get_ordered_fnames
 from tip_detector.image_helpers import (
     extract_roi,
     find_contours,
