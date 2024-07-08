@@ -116,15 +116,17 @@ def detect_tip(
 
     if display_results:
         decision = 0 if total_cls[0] > total_cls[1] else 1
-        percent = total_cls[decision] / total_bonds * 100
+        percent = total_cls[1] / total_bonds * 100 if total_bonds > 0 else 0
         print(f"Total bonds: {total_bonds}")
         print(f"Total sharp: {total_cls[1]}")
         print(f"Total dull: {total_cls[0]}")
         print(f"Overall Decision: {CLASS_NAMES[decision]}")
-        print(f"{CLASS_NAMES[decision]} Percentage: {percent:.4f}%")
+        print(f"Sharp Percentage: {percent:.4f}%")
 
         cv2.imshow("Scan", img)
         cv2.imshow("Contrast", img_contrast)
         cv2.imshow("Edges", edged_contrast)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    return total_cls
