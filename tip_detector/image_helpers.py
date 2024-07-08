@@ -1,16 +1,11 @@
 import json
-import os
 
 import cv2
 import numpy as np
 
 # Load config file
-if os.path.exists("../config.json"):
-    with open("../config.json") as f:
-        config = json.load(f)
-else:
-    with open("config.json") as f:
-        config = json.load(f)
+with open("config.json") as f:
+    config = json.load(f)
 
 SQUARE_PIXEL_SIZE = config["SQUARE_PIXEL_SIZE"]
 
@@ -67,7 +62,7 @@ def merge_contours(contours):
 def extract_roi(img: np.ndarray, x1: int, y1: int, x2: int, y2: int):
     """
     Extracts the region of interest from the image.
-    
+
     Parameters:
         img (ndarray): Image to extract the region of interest from
         x1 (int): X coordinate of the top left corner of the square

@@ -1,6 +1,7 @@
 *_data/
 models/
 full_scan_examples/
+configs/
 
 *.h5
 *.keras

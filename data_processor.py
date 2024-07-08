@@ -8,7 +8,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from helpers import get_ordered_fnames
-from tip_detector.helpers import (
+from tip_detector.image_helpers import (
     extract_roi,
     find_contours,
     locate_brighthest_pixel,
