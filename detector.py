@@ -4,8 +4,11 @@ import os
 import cv2
 from tensorflow.keras.models import load_model  # type: ignore
 
-from tip_detector.interface_helpers import create_scan_configs, extract_nm_from_path
-from tip_detector.main_functions import detect_tip
+from detector_functions.interface_helpers import (
+    create_scan_configs,
+    extract_nm_from_path,
+)
+from detector_functions.main_functions import detect_tip
 
 # Load config file
 with open("config.json") as f:

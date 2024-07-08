@@ -7,8 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from trainer_helpers.helpers import get_ordered_fnames
-from tip_detector.image_helpers import (
+from detector_functions.image_helpers import (
     extract_roi,
     find_contours,
     locate_brighthest_pixel,
@@ -16,6 +15,7 @@ from tip_detector.image_helpers import (
     preprocess_image,
     resize_roi,
 )
+from trainer_functions.helpers import get_ordered_fnames
 
 img_directory = "training_data"
 

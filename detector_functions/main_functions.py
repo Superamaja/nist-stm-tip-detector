@@ -1,12 +1,13 @@
 import cv2
 import numpy as np
 
-from tip_detector.image_helpers import (
+from detector_functions.image_helpers import (
     extract_roi,
     find_contours,
     locate_brighthest_pixel,
     preprocess_image,
     resize_roi,
+    rotate_image,
 )
 
 # Constants
