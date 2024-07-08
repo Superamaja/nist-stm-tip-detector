@@ -7,8 +7,15 @@ from tensorflow.keras.models import load_model  # type: ignore
 from detector_functions.interface_helpers import (
     create_scan_configs,
     extract_nm_from_path,
+    get_configs,
 )
 from detector_functions.main_functions import detect_tip
+
+SCAN_CONFIG_PARAMETERS = [
+    "scan_nm",
+    "contrast",
+    "rotation",
+]
 
 # Load config file
 with open("config.json") as f:
@@ -26,19 +33,15 @@ paths = []
 for path in config["SCANS"]:
     new_path = config["SCAN_FOLDER"] + path
     paths.append(new_path)
-    if not new_path in scan_configs:
-        print(f"No config found for {new_path}")
-        scan_configs[new_path] = {
-            "scan_nm": extract_nm_from_path(new_path),
-            "contrast": float(input("Enter the contrast value: ")),
-            "rotation": float(input("Enter the rotation value: ")),
-        }
-        configs_changed = True
+    scan_configs[new_path] = get_configs(
+        new_path,
+        scan_configs[new_path] if new_path in scan_configs else None,
+        SCAN_CONFIG_PARAMETERS,
+    )
 
-if configs_changed:
-    print("Saving scan configs...")
-    create_scan_configs(scan_configs)
-    print(scan_configs)
+print("Saving scan configs...")
+create_scan_configs(scan_configs)
+print(scan_configs)
 
 
 model = load_model("model.h5")

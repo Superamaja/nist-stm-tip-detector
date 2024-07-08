@@ -22,3 +22,24 @@ def create_scan_configs(scan_configs):
         os.makedirs("configs")
     with open("configs/scan_configs.json", "w") as f:
         json.dump(scan_configs, f, indent=4)
+
+
+def get_configs(path, scan_configs, SCAN_CONFIG_PARAMETERS):
+    configs = {}
+    path_printed = False
+    for param in SCAN_CONFIG_PARAMETERS:
+        if scan_configs is None:
+            scan_configs = {}
+            print(f"\nCreating configs for {path}")
+            path_printed = True
+        if param in scan_configs:
+            configs[param] = scan_configs[param]
+        else:
+            if not path_printed:
+                print(f"\nMissing {param} value for {path}")
+                path_printed = True
+            if param == "scan_nm":
+                configs[param] = extract_nm_from_path(path)
+            else:
+                configs[param] = float(input(f"Enter the {param} value: "))
+    return configs
