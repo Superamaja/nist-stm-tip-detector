@@ -2,12 +2,16 @@
     "SQUARE_NM_SIZE": 2,
     "SQUARE_PIXEL_SIZE": 38,
     "DETECTOR_CROSS_SIZE": 1,
-    "DETECTOR_SCAN_DEBUG": false,
+    "DETECTOR_OPEN_IMAGE_ON_CONFIG": false,
+    "DETECTOR_SCAN_DEBUG": true,
     "DETECTOR_ROI_DEBUG": false,
     "SCAN_FOLDER": "full_scan_examples/",
     "SCANS": [
         "full_scan_example1_45nmx45nm.png",
         "full_scan_example2_45nmx45nm.png",
-        "default_2017Jul21-230336_STM-STM_AtomManipulation--19_9.___10nmx10nm___r45deg.png"
+        "default_2017Jul21-230336_STM-STM_AtomManipulation--19_9.___10nmx10nm___.png",
+        "default_2017Jul21-230336_STM-STM_AtomManipulation--19_9.___10nmx10nm___r45deg.png",
+        "default_2017Jun20-143916_STM-STM_AtomManipulation--4_1.___20nmx20nm___.png",
+        "default_2017Jul21-230336_STM-STM_AtomManipulation--19_44.Z_flat_10nmx10nm.png"
     ]
 }
