@@ -3,7 +3,6 @@ import os
 import sys
 
 import cv2
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
@@ -13,7 +12,6 @@ from detector_functions.image_helpers import (
     locate_brightest_pixel,
     merge_contours,
     preprocess_image,
-    resize_roi,
 )
 from trainer_functions.helpers import get_ordered_fnames
 
