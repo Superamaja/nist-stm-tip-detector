@@ -38,9 +38,42 @@ def find_contours(img, alpha):
     return contours, img_contrast, edged
 
 
+def merge_overlapping_contours(contours, overlap_threshold=0.5):
+    """
+    Merge contours that overlap by more than a certain threshold.
+    """
+    merged_contours = []
+    contours = list(contours)  # Convert tuple to list
+    while contours:
+        base = contours.pop(0)
+        base_rect = cv2.boundingRect(base)
+        base_x, base_y, base_w, base_h = base_rect
+        merged = False
+        i = 0
+        while i < len(contours):
+            cnt = contours[i]
+            cnt_rect = cv2.boundingRect(cnt)
+            cnt_x, cnt_y, cnt_w, cnt_h = cnt_rect
+            if max(base_x, cnt_x) < min(base_x + base_w, cnt_x + cnt_w) and max(
+                base_y, cnt_y
+            ) < min(base_y + base_h, cnt_y + cnt_h):
+                if (min(base_x + base_w, cnt_x + cnt_w) - max(base_x, cnt_x)) * (
+                    min(base_y + base_h, cnt_y + cnt_h) - max(base_y, cnt_y)
+                ) >= overlap_threshold * base_w * base_h:
+                    merged_contour = np.vstack((base, cnt))
+                    contours.pop(i)
+                    contours.insert(0, merged_contour)
+                    merged = True
+                    break
+            i += 1
+        if not merged:
+            merged_contours.append(base)
+    return merged_contours
+
+
 def box_all_image_contours(contours):
     """
-    Merges the contours into one by combining their furthest points.
+    Creates a bounding box around all the contours.
     """
     left_x, top_y, w, h = cv2.boundingRect(contours[0])
     right_x = left_x + w

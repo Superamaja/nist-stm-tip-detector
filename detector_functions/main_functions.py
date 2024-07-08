@@ -5,6 +5,7 @@ from detector_functions.image_helpers import (
     extract_roi,
     find_contours,
     locate_brightest_pixel,
+    merge_overlapping_contours,
     preprocess_image,
     resize_roi,
     rotate_image,
@@ -40,6 +41,7 @@ def detect_tip(
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     contours, img_contrast, edged_contrast = find_contours(img, contrast)
+    contours = merge_overlapping_contours(contours, overlap_threshold=0)
 
     total_bonds = 0
     total_cls = {0: 0, 1: 0}
