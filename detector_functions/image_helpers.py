@@ -38,7 +38,7 @@ def find_contours(img, alpha):
     return contours, img_contrast, edged
 
 
-def merge_contours(contours):
+def box_all_image_contours(contours):
     """
     Merges the contours into one by combining their furthest points.
     """

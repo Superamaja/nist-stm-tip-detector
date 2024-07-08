@@ -7,10 +7,10 @@ import pandas as pd
 from tqdm import tqdm
 
 from detector_functions.image_helpers import (
+    box_all_image_contours,
     extract_roi,
     find_contours,
     locate_brightest_pixel,
-    merge_contours,
     preprocess_image,
 )
 from trainer_functions.helpers import get_ordered_fnames
@@ -56,7 +56,7 @@ for i, fname in iterator:
 
     x1, y1, x2, y2 = 0, 0, 0, 0
     if len(contours) > 1:
-        x1, y1, x2, y2 = merge_contours(contours)
+        x1, y1, x2, y2 = box_all_image_contours(contours)
 
     elif len(contours) == 1:
         x1, y1, w, h = cv2.boundingRect(contours[0])
