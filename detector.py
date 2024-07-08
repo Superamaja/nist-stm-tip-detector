@@ -62,8 +62,8 @@ for image_path in paths:
     )
     outputData = {
         "scan": image_path,
-        "sharp": total_cls[0],
-        "dull": total_cls[1],
+        "sharp": total_cls[1],
+        "dull": total_cls[0],
         "total": total_cls[0] + total_cls[1],
     }
     for key, value in scan_configs[image_path].items():
