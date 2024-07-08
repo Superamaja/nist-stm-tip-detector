@@ -4,7 +4,7 @@ import numpy as np
 from detector_functions.image_helpers import (
     extract_roi,
     find_contours,
-    locate_brighthest_pixel,
+    locate_brightest_pixel,
     preprocess_image,
     resize_roi,
     rotate_image,
@@ -53,7 +53,7 @@ def detect_tip(
             new_size = int(square_nm_size / nm_p_pixel)
 
             # Remove duplicates from brightness centering
-            x_b, y_b = locate_brighthest_pixel(roi)
+            x_b, y_b = locate_brightest_pixel(roi)
             if (x_b + x, y_b + y) in brightest_locations:
                 continue
             brightest_locations.add((x_b + x, y_b + y))

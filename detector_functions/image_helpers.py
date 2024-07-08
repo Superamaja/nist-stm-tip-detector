@@ -110,7 +110,7 @@ def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int)
     )
 
 
-def locate_brighthest_pixel(img):
+def locate_brightest_pixel(img):
     """
     Locates the brightest pixel in the image.
     Finds the average location if there are multiple pixels with the same brightness.

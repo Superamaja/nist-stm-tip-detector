@@ -10,7 +10,7 @@ from tqdm import tqdm
 from detector_functions.image_helpers import (
     extract_roi,
     find_contours,
-    locate_brighthest_pixel,
+    locate_brightest_pixel,
     merge_contours,
     preprocess_image,
     resize_roi,
@@ -78,7 +78,7 @@ for i, fname in iterator:
         continue
 
     # Find the brightest pixel in the ROI
-    x_b, y_b = locate_brighthest_pixel(roi)
+    x_b, y_b = locate_brightest_pixel(roi)
 
     # Calculator the size of the square in nm
     nm_p_pixel = [
