@@ -2,7 +2,7 @@
     "SQUARE_NM_SIZE": 2,
     "SQUARE_PIXEL_SIZE": 38,
     "DETECTOR_CROSS_SIZE": 1,
-    "DETECTOR_SCAN_DEBUG": true,
+    "DETECTOR_SCAN_DEBUG": false,
     "DETECTOR_ROI_DEBUG": false,
     "SCAN_FOLDER": "full_scan_examples/",
     "SCANS": [

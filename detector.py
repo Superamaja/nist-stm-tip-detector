@@ -1,14 +1,11 @@
+import csv
 import json
 import os
 
 import cv2
 from tensorflow.keras.models import load_model  # type: ignore
 
-from detector_functions.interface_helpers import (
-    create_scan_configs,
-    extract_nm_from_path,
-    get_configs,
-)
+from detector_functions.interface_helpers import create_scan_configs, get_configs
 from detector_functions.main_functions import detect_tip
 
 SCAN_CONFIG_PARAMETERS = [
@@ -46,14 +43,13 @@ print(scan_configs)
 
 model = load_model("model.h5")
 
+outputs = []
 for image_path in paths:
-    scan_nm = scan_configs[image_path]["scan_nm"]
-    contrast = scan_configs[image_path]["contrast"]
-    rotation = scan_configs[image_path]["rotation"]
+    scan_nm, contrast, rotation = scan_configs[image_path].values()
 
     img = cv2.imread(image_path)
 
-    output = detect_tip(
+    total_cls = detect_tip(
         img,
         scan_nm=scan_nm,
         square_nm_size=config["SQUARE_NM_SIZE"],
@@ -64,3 +60,47 @@ for image_path in paths:
         display_results=config["DETECTOR_SCAN_DEBUG"],
         debug=config["DETECTOR_ROI_DEBUG"],
     )
+    outputData = {
+        "scan": image_path,
+        "sharp": total_cls[0],
+        "dull": total_cls[1],
+        "total": total_cls[0] + total_cls[1],
+    }
+    for key, value in scan_configs[image_path].items():
+        outputData[key] = value
+
+    outputs.append(outputData)
+
+export_csv = {
+    "scan": [],
+    "percentage": [],
+    "sharp": [],
+    "dull": [],
+    "total": [],
+}
+for key in SCAN_CONFIG_PARAMETERS:
+    export_csv[key] = []
+
+for i, output in enumerate(outputs):
+    percentage = output["sharp"] / (output["total"]) * 100
+
+    # Add data to export_csv
+    for key, value in output.items():
+        export_csv[key].append(value)
+    for key, value in scan_configs[output["scan"]].items():
+        export_csv[key].append(value)
+    export_csv["percentage"].append(percentage)
+
+    # Print results
+    print()
+    print(config["SCANS"][i])
+    print(f"Sharp: {output['sharp']} Dull: {output['dull']} Total: {output['total']}")
+    print(f"Sharp Percentage: {percentage:.2f}%")
+
+    for key, value in output.items():
+        export_csv[key].append(value)
+
+with open("results.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(export_csv.keys())
+    writer.writerows(zip(*export_csv.values()))
