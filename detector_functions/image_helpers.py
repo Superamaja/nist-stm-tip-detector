@@ -118,3 +118,17 @@ def locate_brighthest_pixel(img):
     max_value = np.max(img)
     y, x = np.where(img == max_value)
     return int(np.mean(x)), int(np.mean(y))
+
+
+def rotate_image(img, angle):
+    """
+    Rotates the image by the specified angle.
+    """
+    if len(img.shape) == 3:
+        rows, cols, _ = img.shape
+    else:
+        rows, cols = img.shape
+    M = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
+    return cv2.warpAffine(
+        img, M, (cols, rows), borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0)
+    )

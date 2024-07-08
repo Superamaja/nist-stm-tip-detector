@@ -31,6 +31,7 @@ for path in config["SCANS"]:
         scan_configs[new_path] = {
             "scan_nm": extract_nm_from_path(new_path),
             "contrast": float(input("Enter the contrast value: ")),
+            "rotation": float(input("Enter the rotation value: ")),
         }
         configs_changed = True
 
@@ -45,6 +46,7 @@ model = load_model("model.h5")
 for image_path in paths:
     scan_nm = scan_configs[image_path]["scan_nm"]
     contrast = scan_configs[image_path]["contrast"]
+    rotation = scan_configs[image_path]["rotation"]
 
     img = cv2.imread(image_path)
 
@@ -55,6 +57,7 @@ for image_path in paths:
         model=model,
         cross_size=config["DETECTOR_CROSS_SIZE"],
         contrast=contrast,
+        rotation=rotation,
         display_results=config["DETECTOR_SCAN_DEBUG"],
         debug=config["DETECTOR_ROI_DEBUG"],
     )

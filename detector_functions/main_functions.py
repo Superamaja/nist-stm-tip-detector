@@ -31,21 +31,20 @@ def detect_tip(
     square_nm_size=2,
     cross_size=0,
     contrast=1,
+    rotation=45,
     display_results=False,
     debug=False,
 ):
+    if rotation != 0:
+        img = rotate_image(img, rotation)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Process the image with different contrast levels
     contours, img_contrast, edged_contrast = find_contours(img, contrast)
 
     total_bonds = 0
     total_cls = {0: 0, 1: 0}
-
     nm_p_pixel = scan_nm / img.shape[1]
-
     brightest_locations = set()
-
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
