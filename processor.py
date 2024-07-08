@@ -7,12 +7,12 @@ import pandas as pd
 from tqdm import tqdm
 
 from detector_functions.image_helpers import (
-    box_all_image_contours,
     extract_roi,
     find_contours,
     locate_brightest_pixel,
     preprocess_image,
 )
+from processor_functions.helpers import box_all_image_contours
 from trainer_functions.helpers import get_ordered_fnames
 
 img_directory = "training_data"
