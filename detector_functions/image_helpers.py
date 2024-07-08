@@ -129,6 +129,20 @@ def rotate_image(img, angle):
     else:
         rows, cols = img.shape
     M = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
+
+    # Get the average color of just the edges
+    if len(img.shape) == 3:
+        border_color = np.average(
+            [img[0, 0], img[0, -1], img[-1, 0], img[-1, -1]], axis=0
+        )
+    else:
+        border_color = np.average([img[0, 0], img[0, -1], img[-1, 0], img[-1, -1]])
+
+    # Apply the rotation
     return cv2.warpAffine(
-        img, M, (cols, rows), borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0)
+        img,
+        M,
+        (cols, rows),
+        borderMode=cv2.BORDER_CONSTANT,
+        borderValue=border_color,
     )
