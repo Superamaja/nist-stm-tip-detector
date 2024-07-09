@@ -89,6 +89,13 @@ def detect_tip(
                 GREEN if cls else RED,
                 0,
             )
+            cv2.rectangle(
+                img_contrast,
+                (x, y),
+                (x + w, y + h),
+                (0, 255, 255),
+                0,
+            )
 
             # Count the number of contours
             total_bonds += 1
