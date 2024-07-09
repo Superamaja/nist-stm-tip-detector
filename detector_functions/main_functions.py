@@ -51,22 +51,22 @@ def detect_tip(
         x, y, w, h = cv2.boundingRect(cnt)
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
             # Extract the ROI and resize it to a square
-            roi, x, y, _ = extract_roi(gray, x, y, x + w, y + h)
+            roi, x_roi, y_roi, _ = extract_roi(gray, x, y, x + w, y + h)
             new_size = int(square_nm_size / nm_p_pixel)
 
             # Remove duplicates from brightness centering
             x_b, y_b = locate_brightest_pixel(roi)
-            if (x_b + x, y_b + y) in brightest_locations:
+            if (x_b + x_roi, y_b + y_roi) in brightest_locations:
                 continue
-            brightest_locations.add((x_b + x, y_b + y))
+            brightest_locations.add((x_b + x_roi, y_b + y_roi))
 
             # Perform the cross check
             cross_predictions = []
-            new_x = x + x_b - new_size // 2
-            new_y = y + y_b - new_size // 2
+            new_x = x_roi + x_b - new_size // 2
+            new_y = y_roi + y_b - new_size // 2
             for direction in range(2):
                 for shift in range(-cross_size, cross_size + 1):
-                    roi, x, y, new_size = resize_roi(
+                    roi, x_roi, y_roi, new_size = resize_roi(
                         gray,
                         new_x + shift * direction,
                         new_y + shift * (1 - direction),
@@ -84,27 +84,11 @@ def detect_tip(
             # Draw bounding box
             cv2.rectangle(
                 img,
-                (x, y),
-                (x + new_size, y + new_size),
+                (x_roi, y_roi),
+                (x_roi + new_size, y_roi + new_size),
                 GREEN if cls else RED,
                 0,
             )
-
-            # Object details
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 0.35
-            thickness = 1
-
-            # if prediction >= 0.005:
-            #     cv2.putText(
-            #         img,
-            #         f"{prediction:.2f}",
-            #         (x, y - 5),
-            #         font,
-            #         fontScale,
-            #         BLUE,
-            #         thickness,
-            #     )
 
             # Count the number of contours
             total_bonds += 1
