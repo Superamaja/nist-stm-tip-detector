@@ -5,7 +5,7 @@ import os
 import cv2
 from tensorflow.keras.models import load_model  # type: ignore
 
-from detector_functions.interface_helpers import create_scan_configs, get_configs
+from detector_functions.interface_helpers import get_configs, initialize_scan_configs
 from detector_functions.main_functions import detect_tip
 
 SCAN_CONFIG_PARAMETERS = [
@@ -32,12 +32,12 @@ for path in config["SCANS"]:
     paths.append(new_path)
     scan_configs[new_path] = get_configs(
         new_path,
-        scan_configs[new_path] if new_path in scan_configs else None,
+        scan_configs[new_path] if new_path in scan_configs else {},
         SCAN_CONFIG_PARAMETERS,
     )
 
 print("Saving scan configs...")
-create_scan_configs(scan_configs)
+initialize_scan_configs(scan_configs)
 print(scan_configs)
 
 

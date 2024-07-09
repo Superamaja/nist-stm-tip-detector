@@ -87,14 +87,14 @@ def detect_tip(
 
             # Draw bounding box
             if display_results:
-                cv2.rectangle(
+                cv2.rectangle(  # Scan red/green boxes
                     img,
                     (x_roi, y_roi),
                     (x_roi + new_size, y_roi + new_size),
                     GREEN if cls else RED,
                     0,
                 )
-                cv2.rectangle(
+                cv2.rectangle(  # Contour blue boxes
                     img_contrast,
                     (x, y),
                     (x + w, y + h),

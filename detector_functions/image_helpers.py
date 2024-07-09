@@ -130,6 +130,7 @@ def rotate_image(img, angle):
 def merge_overlapping_contours(contours, overlap_threshold=0.5):
     """
     Merge contours that overlap by more than a certain threshold.
+    Code produced by GPT-4o.
     """
     merged_contours = []
     contours = list(contours)  # Convert tuple to list

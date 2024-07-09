@@ -5,6 +5,8 @@ import os
 def extract_nm_from_path(image_path):
     """
     Extracts the nm from the image path.
+
+    Finds the number between "nmx" and "nm" in the image path due to the format 45nmx45nm.
     """
     try:
         temp_path = image_path
@@ -17,18 +19,29 @@ def extract_nm_from_path(image_path):
     return scan_nm
 
 
-def create_scan_configs(scan_configs):
+def initialize_scan_configs(scan_configs):
+    """
+    Create the scan configurations file.
+    """
     if not os.path.exists("configs"):
         os.makedirs("configs")
     with open("configs/scan_configs.json", "w") as f:
         json.dump(scan_configs, f, indent=4)
 
 
-def get_configs(path, scan_configs, SCAN_CONFIG_PARAMETERS):
+def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list):
+    """
+    Get the configurations for the scan from the user.
+
+    Parameters:
+        path (str): Path of the image
+        scan_configs (dict): Scan configurations
+        SCAN_CONFIG_PARAMETERS (list): List of scan configuration parameters
+    """
     configs = {}
     path_printed = False
     for param in SCAN_CONFIG_PARAMETERS:
-        if scan_configs is None:
+        if not path_printed and any(scan_configs) == False:
             scan_configs = {}
             print(f"\nCreating configs for {path}")
             path_printed = True
