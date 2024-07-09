@@ -49,7 +49,7 @@ for image_path in paths:
 
     img = cv2.imread(image_path)
 
-    total_cls = detect_tip(
+    total_cls, _ = detect_tip(
         img,
         scan_nm=scan_nm,
         square_nm_size=config["SQUARE_NM_SIZE"],

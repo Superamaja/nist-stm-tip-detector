@@ -26,7 +26,7 @@ BLUE = (255, 200, 0)
 
 
 def detect_tip(
-    img,
+    img: np.ndarray,
     scan_nm,
     model,
     square_nm_size=2,
@@ -47,6 +47,7 @@ def detect_tip(
     total_cls = {0: 0, 1: 0}
     nm_p_pixel = scan_nm / img.shape[1]
     brightest_locations = set()
+    roi_locations = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
@@ -84,6 +85,17 @@ def detect_tip(
             # Count the number of contours
             total_bonds += 1
             total_cls[cls] += 1
+
+            # Store the additional information
+            roi_locations.append(
+                {
+                    "x": x_roi,
+                    "y": y_roi,
+                    "size": new_size,
+                    "class": cls,
+                    "prediction": prediction,
+                }
+            )
 
             # Draw bounding box
             if display_results:
@@ -123,4 +135,8 @@ def detect_tip(
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    return total_cls
+    additional_info = {
+        "roi_locations": roi_locations,
+    }
+
+    return total_cls, additional_info
