@@ -81,25 +81,26 @@ def detect_tip(
             cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
             print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
 
-            # Draw bounding box
-            cv2.rectangle(
-                img,
-                (x_roi, y_roi),
-                (x_roi + new_size, y_roi + new_size),
-                GREEN if cls else RED,
-                0,
-            )
-            cv2.rectangle(
-                img_contrast,
-                (x, y),
-                (x + w, y + h),
-                (0, 255, 255),
-                0,
-            )
-
             # Count the number of contours
             total_bonds += 1
             total_cls[cls] += 1
+
+            # Draw bounding box
+            if display_results:
+                cv2.rectangle(
+                    img,
+                    (x_roi, y_roi),
+                    (x_roi + new_size, y_roi + new_size),
+                    GREEN if cls else RED,
+                    0,
+                )
+                cv2.rectangle(
+                    img_contrast,
+                    (x, y),
+                    (x + w, y + h),
+                    (0, 255, 255),
+                    0,
+                )
 
             if debug:
                 cv2.imshow("Scan", img)
