@@ -28,5 +28,5 @@ result = send_request(data)
 print(result)
 
 # Save the results
-with open("result.json", "w") as f:
-    f.write(result)
+with open("results.json", "w") as f:
+    f.write(json.dumps(json.loads(result), indent=4))
