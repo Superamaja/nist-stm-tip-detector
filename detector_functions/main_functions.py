@@ -92,7 +92,6 @@ def detect_tip(
                     "x": x_roi,
                     "y": y_roi,
                     "size": new_size,
-                    "class": cls,
                     "prediction": prediction,
                 }
             )
