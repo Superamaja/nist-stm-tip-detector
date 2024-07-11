@@ -1,5 +1,5 @@
 {
-    "SQUARE_NM_SIZE": 2,
+    "ROI_NM_SIZE": 2,
     "SQUARE_PIXEL_SIZE": 38,
     "DETECTOR_CROSS_SIZE": 1,
     "DETECTOR_OPEN_IMAGE_ON_CONFIG": false,

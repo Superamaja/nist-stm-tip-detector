@@ -32,7 +32,7 @@ FOLDER_EXTENSION = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 with open("config.json") as f:
     config = json.load(f)
 
-SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
+ROI_NM_SIZE = config["ROI_NM_SIZE"]
 SQUARE_PIXEL_SIZE = config["SQUARE_PIXEL_SIZE"]
 
 
@@ -264,7 +264,7 @@ with open(f"{folder_directory}/logs.txt", "w") as f:
 {user_notes}
         
 --Config Info--
-Square NM Size: {SQUARE_NM_SIZE}
+Square NM Size: {ROI_NM_SIZE}
 Pixel Size: {SQUARE_PIXEL_SIZE}
 Augmentation: {xforms_per_image}
 Batch Size: {batch_size}

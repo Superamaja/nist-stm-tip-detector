@@ -52,7 +52,7 @@ for image_path in paths:
     tip_data = detect_tip(
         img,
         scan_nm=scan_nm,
-        square_nm_size=config["SQUARE_NM_SIZE"],
+        roi_nm_size=config["ROI_NM_SIZE"],
         model=model,
         cross_size=config["DETECTOR_CROSS_SIZE"],
         contrast=contrast,

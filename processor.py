@@ -22,7 +22,7 @@ DEBUG = False
 # Load the configuration file
 with open("config.json") as f:
     config = json.load(f)
-SQUARE_NM_SIZE = config["SQUARE_NM_SIZE"]
+ROI_NM_SIZE = config["ROI_NM_SIZE"]
 
 # Check for system arguments
 start_index = 0
@@ -88,10 +88,10 @@ for i, fname in iterator:
     # ! Assumes that the image is square
     roi, x_exp, y_exp, new_size = extract_roi(
         gray,
-        x_b + x_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-        y_b + y_roi - int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-        x_b + x_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
-        y_b + y_roi + int(SQUARE_NM_SIZE / nm_p_pixel[0] / 2),
+        x_b + x_roi - int(ROI_NM_SIZE / nm_p_pixel[0] / 2),
+        y_b + y_roi - int(ROI_NM_SIZE / nm_p_pixel[0] / 2),
+        x_b + x_roi + int(ROI_NM_SIZE / nm_p_pixel[0] / 2),
+        y_b + y_roi + int(ROI_NM_SIZE / nm_p_pixel[0] / 2),
     )
 
     roi_preprocessed = preprocess_image(roi)

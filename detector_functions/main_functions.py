@@ -29,7 +29,7 @@ def detect_tip(
     img: np.ndarray,
     scan_nm,
     model,
-    square_nm_size=2,
+    roi_nm_size=2,
     cross_size=0,
     contrast=1,
     rotation=45,
@@ -53,7 +53,7 @@ def detect_tip(
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
             # Extract the ROI and resize it to a square
             roi, x_roi, y_roi, _ = extract_roi(gray, x, y, x + w, y + h)
-            new_size = int(square_nm_size / nm_p_pixel)
+            new_size = int(roi_nm_size / nm_p_pixel)
 
             # Remove duplicates from brightness centering
             x_b, y_b = locate_brightest_pixel(roi)
