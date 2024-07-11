@@ -135,8 +135,11 @@ def detect_tip(
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    additional_info = {
+    output = {
+        "sharp": total_cls[1],
+        "dull": total_cls[0],
+        "total": total_cls[0] + total_cls[1],
         "roi_locations": roi_locations,
     }
 
-    return total_cls, additional_info
+    return output

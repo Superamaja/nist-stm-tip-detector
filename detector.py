@@ -49,7 +49,7 @@ for image_path in paths:
 
     img = cv2.imread(image_path)
 
-    total_cls, _ = detect_tip(
+    tip_data = detect_tip(
         img,
         scan_nm=scan_nm,
         square_nm_size=config["SQUARE_NM_SIZE"],
@@ -60,16 +60,16 @@ for image_path in paths:
         display_results=config["DETECTOR_SCAN_DEBUG"],
         debug=config["DETECTOR_ROI_DEBUG"],
     )
-    outputData = {
+    output_data = {
         "scan": image_path,
-        "sharp": total_cls[1],
-        "dull": total_cls[0],
-        "total": total_cls[0] + total_cls[1],
+        "sharp": tip_data["sharp"],
+        "dull": tip_data["dull"],
+        "total": tip_data["total"],
     }
     for key, value in scan_configs[image_path].items():
-        outputData[key] = value
+        output_data[key] = value
 
-    outputs.append(outputData)
+    outputs.append(output_data)
 
 export_csv = {
     "scan": [],
