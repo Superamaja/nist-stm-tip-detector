@@ -38,7 +38,6 @@ for path in config["SCANS"]:
 
 print("Saving scan configs...")
 initialize_scan_configs(scan_configs)
-print(scan_configs)
 
 
 model = load_model("model.h5")
