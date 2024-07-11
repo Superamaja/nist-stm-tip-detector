@@ -33,7 +33,7 @@ def convert_to_serializable(obj):
     return obj
 
 
-def process_image(data):
+def process_image(data: dict) -> dict:
     img_path, scan_nm, contrast, rotation = data.values()
     img = cv2.imread(img_path)
 
@@ -54,7 +54,7 @@ def process_image(data):
     return serializable_data
 
 
-def receive_json(client_socket, timeout=5):
+def receive_json(client_socket: socket.socket, timeout=5) -> dict:
     data = ""
     start_time = time.time()
     while True:
@@ -74,7 +74,7 @@ def receive_json(client_socket, timeout=5):
             raise TimeoutError("Timeout while waiting for data")
 
 
-def handle_client(client_socket):
+def handle_client(client_socket: socket.socket) -> None:
     try:
         # Receive data from the client
         input_data = receive_json(client_socket)
@@ -103,7 +103,7 @@ def handle_client(client_socket):
         client_socket.close()
 
 
-def start_server(host="localhost", port=12345):
+def start_server(host="localhost", port=12345) -> None:
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
     server_socket.listen(5)
