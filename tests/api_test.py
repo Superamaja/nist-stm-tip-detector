@@ -1,111 +1,82 @@
+"""
+Unit tests for the send_request function.
+
+This module contains a series of unit tests for the send_request function, which
+connects to a specified API via a socket, sends a JSON payload, and validates the response.
+The tests are designed to check the following:
+- The response is not None.
+- The response is valid JSON.
+- The response contains the expected keys: "sharp", "dull", "total", and "roi_data".
+- The counts of "sharp" and "dull" elements match the expected values.
+
+Note:
+The expected counts for "sharp" and "dull" are hard-coded to 26 and 5, respectively.
+These counts may change if any modifications are made to the detector logic in the API.
+If the tests for "sharp" and "dull" counts fail, review the changes made to the detector logic.
+
+Reminder:
+Ensure that api.py is running before executing these tests.
+
+Usage:
+python test_send_request.py
+"""
+
 import json
-import logging
-import os
 import socket
-import subprocess
-import time
 import unittest
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
-# Configuration
-HOST = "localhost"
-PORT = 5050
-API_SCRIPT = "api.py"
-
-
-def send_request(data, host=HOST, port=PORT):
+def send_request(data, host="localhost", port=5050):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        client_socket.connect((host, port))
-        client_socket.sendall(json.dumps(data).encode("utf-8"))
-        result = client_socket.recv(4096).decode("utf-8")
-        return result
-    except Exception as e:
-        logger.error(f"Error in send_request: {e}")
-        return None
-    finally:
-        client_socket.close()
+    client_socket.connect((host, port))
+    # Send the data
+    client_socket.sendall(json.dumps(data).encode("utf-8"))
+    # Receive the result
+    result = client_socket.recv(4096).decode("utf-8")
+    client_socket.close()
+    return result  # Note: This might be JSON or an error message
 
 
-class SendRequestTestCase(unittest.TestCase):
+class TestSendRequest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-
-        # Construct the command to run api.py
-        api_script_path = API_SCRIPT
-        if not os.path.exists(api_script_path):
-            raise FileNotFoundError(f"API script not found at {api_script_path}")
-
-        cmd = ["python", api_script_path]
-
-        logger.info(f"Starting API server with command: {' '.join(cmd)}")
-
-        # Start the api.py server
-        try:
-            cls.api_process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                universal_newlines=True,
-            )
-        except Exception as e:
-            logger.error(f"Failed to start API server: {e}")
-            raise
-
-        # Wait for the server to start
-        time.sleep(2)
-
-        # Check if the process is still running
-        if cls.api_process.poll() is not None:
-            stdout, stderr = cls.api_process.communicate()
-            logger.error(
-                f"API server failed to start. Stdout: {stdout}, Stderr: {stderr}"
-            )
-            raise RuntimeError("API server failed to start")
-
-        logger.info("API server started successfully")
-
-    @classmethod
-    def tearDownClass(cls):
-        logger.info("Stopping API server")
-        if hasattr(cls, "api_process"):
-            cls.api_process.terminate()
-            cls.api_process.wait(timeout=5)
-            logger.info("API server stopped")
-        else:
-            logger.warning("API process not found during teardown")
-
-    def test_send_request(self):
-        data = {
+        cls.data = {
             "scan_path": "full_scan_examples/20230131-180445_20211029 W31 P14--STM_AtomManipulation--128_2.Z_mtrx",
             "detector_options": {
                 "contrast": 0.6,
                 "rotation": 0.0,
             },
         }
-
-        result = send_request(data)
-
-        # Check if the result is valid
-        self.assertIsNotNone(result, "Result should not be None")
-
-        # Check if the result is a valid JSON string
+        cls.result = send_request(cls.data)
         try:
-            result_dict = json.loads(result)
+            cls.result_dict = json.loads(cls.result)
         except json.JSONDecodeError:
-            self.fail("Result is not a valid JSON string")
+            cls.result_dict = None
 
-        # Check if the result contains the expected keys
+    def test_result_not_none(self):
+        self.assertIsNotNone(self.result, "Result should not be None")
+
+    def test_result_is_valid_json(self):
+        self.assertIsNotNone(self.result_dict, "Result should be valid JSON")
+
+    def test_result_contains_expected_keys(self):
+        if self.result_dict is None:
+            self.fail("Result dict is None, cannot check for expected keys")
         expected_keys = ["sharp", "dull", "total", "roi_data"]
         for key in expected_keys:
-            self.assertIn(key, result_dict, f"Result should contain the key: {key}")
+            self.assertIn(
+                key, self.result_dict, f"Result should contain the key: {key}"
+            )
 
-        # Check if the results are specific values (could be wrong with detector logic changes)
-        self.assertEqual(result_dict["sharp"], 26, "Expected sharp count")
-        self.assertEqual(result_dict["dull"], 5, "Expected dull count")
+    def test_sharp_count(self):
+        if self.result_dict is None:
+            self.fail("Result dict is None, cannot check sharp count")
+        self.assertEqual(self.result_dict["sharp"], 26, "Expected sharp count")
+
+    def test_dull_count(self):
+        if self.result_dict is None:
+            self.fail("Result dict is None, cannot check dull count")
+        self.assertEqual(self.result_dict["dull"], 5, "Expected dull count")
 
 
 if __name__ == "__main__":
