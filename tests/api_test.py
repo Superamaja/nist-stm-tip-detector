@@ -89,16 +89,23 @@ class SendRequestTestCase(unittest.TestCase):
 
         result = send_request(data)
 
+        # Check if the result is valid
         self.assertIsNotNone(result, "Result should not be None")
 
+        # Check if the result is a valid JSON string
         try:
             result_dict = json.loads(result)
         except json.JSONDecodeError:
             self.fail("Result is not a valid JSON string")
 
+        # Check if the result contains the expected keys
         expected_keys = ["sharp", "dull", "total", "roi_data"]
         for key in expected_keys:
             self.assertIn(key, result_dict, f"Result should contain the key: {key}")
+
+        # Check if the results are specific values (could be wrong with detector logic changes)
+        self.assertEqual(result_dict["sharp"], 26, "Expected sharp count")
+        self.assertEqual(result_dict["dull"], 5, "Expected dull count")
 
 
 if __name__ == "__main__":
