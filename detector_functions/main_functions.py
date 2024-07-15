@@ -33,8 +33,8 @@ def detect_tip(
     cross_size=0,
     contrast=1,
     rotation=45,
-    display_results=False,
-    debug=False,
+    scan_debug=False,
+    roi_debug=False,
 ):
     if rotation != 0:
         img = rotate_image(img, rotation)
@@ -78,9 +78,9 @@ def detect_tip(
                         continue
                     roi_preprocessed = preprocess_image(roi)
                     cross_predictions.append(
-                        model.predict(
-                            roi_preprocessed, verbose=2 if display_results else 0
-                        )[0][0]
+                        model.predict(roi_preprocessed, verbose=2 if scan_debug else 0)[
+                            0
+                        ][0]
                     )
             prediction = np.max(cross_predictions)
             cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
@@ -101,7 +101,7 @@ def detect_tip(
             )
 
             # Draw bounding box
-            if display_results:
+            if scan_debug:
                 cv2.rectangle(  # Scan red/green boxes
                     img,
                     (x_roi, y_roi),
@@ -117,13 +117,13 @@ def detect_tip(
                     0,
                 )
 
-            if debug:
+            if roi_debug:
                 cv2.imshow("Scan", img)
                 cv2.imshow("ROI2", roi_preprocessed[0])
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
 
-    if display_results:
+    if scan_debug:
         decision = 0 if total_cls[0] > total_cls[1] else 1
         percent = total_cls[1] / total_bonds * 100 if total_bonds > 0 else 0
         print(f"Total bonds: {total_bonds}")

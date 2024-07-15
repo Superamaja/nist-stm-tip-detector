@@ -95,8 +95,8 @@ def process_image(data: dict) -> dict:
         cross_size=config["DETECTOR_CROSS_SIZE"],
         contrast=contrast,
         rotation=rotation,
-        display_results=False,
-        debug=False,
+        scan_debug=False,
+        roi_debug=False,
     )
 
     # Convert numpy types to Python types

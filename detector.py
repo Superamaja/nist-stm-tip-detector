@@ -60,8 +60,8 @@ for image_path in paths:
         cross_size=config["DETECTOR_CROSS_SIZE"],
         contrast=contrast,
         rotation=rotation,
-        display_results=config["DETECTOR_SCAN_DEBUG"],
-        debug=config["DETECTOR_ROI_DEBUG"],
+        scan_debug=config["DETECTOR_SCAN_DEBUG"],
+        roi_debug=config["DETECTOR_ROI_DEBUG"],
     )
     output_data = {
         "scan": image_path,
