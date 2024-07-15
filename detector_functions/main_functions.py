@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from tqdm import tqdm
 
 from detector_functions.image_helpers import (
     extract_roi,
@@ -43,12 +44,17 @@ def detect_tip(
     contours, img_contrast, edged_contrast = find_contours(img, contrast)
     contours = merge_overlapping_contours(contours, overlap_threshold=0)
 
+    # Tqdm setup
+    contour_iterator = (
+        contours if scan_debug else tqdm(contours, desc="Processing contours")
+    )
+
     total_bonds = 0
     total_cls = {0: 0, 1: 0}
     nm_p_pixel = scan_nm / img.shape[0]  # Calculate using height
     brightest_locations = set()
     roi_data = []
-    for cnt in contours:
+    for cnt in contour_iterator:
         x, y, w, h = cv2.boundingRect(cnt)
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
             # Extract the ROI and resize it to a square
@@ -84,7 +90,8 @@ def detect_tip(
                     )
             prediction = np.max(cross_predictions)
             cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
-            print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
+            if scan_debug:
+                print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
 
             # Count the number of contours
             total_bonds += 1
