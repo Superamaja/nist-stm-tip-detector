@@ -95,8 +95,8 @@ def process_image(data: dict) -> dict:
         cross_size=config["DETECTOR_CROSS_SIZE"],
         contrast=contrast,
         rotation=rotation,
-        display_results=config["DETECTOR_SCAN_DEBUG"],
-        debug=config["DETECTOR_ROI_DEBUG"],
+        display_results=False,
+        debug=False,
     )
 
     # Convert numpy types to Python types
@@ -153,7 +153,7 @@ def handle_client(client_socket: socket.socket) -> None:
         client_socket.close()
 
 
-def start_server(host="localhost", port=12345) -> None:
+def start_server(host="localhost", port=5050) -> None:
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
     server_socket.listen(5)
