@@ -7,6 +7,6 @@ configs/
 *.keras
 *.csv
 
-results.json
+send_results.json
 
 __pycache__/

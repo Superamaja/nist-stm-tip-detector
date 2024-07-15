@@ -45,9 +45,9 @@ def detect_tip(
 
     total_bonds = 0
     total_cls = {0: 0, 1: 0}
-    nm_p_pixel = scan_nm / img.shape[0] # Calculate using height
+    nm_p_pixel = scan_nm / img.shape[0]  # Calculate using height
     brightest_locations = set()
-    roi_locations = []
+    roi_data = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
@@ -77,7 +77,11 @@ def detect_tip(
                     if roi.shape[0] == 0 or roi.shape[1] == 0:
                         continue
                     roi_preprocessed = preprocess_image(roi)
-                    cross_predictions.append(model.predict(roi_preprocessed)[0][0])
+                    cross_predictions.append(
+                        model.predict(
+                            roi_preprocessed, verbose=2 if display_results else 0
+                        )[0][0]
+                    )
             prediction = np.max(cross_predictions)
             cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
             print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
@@ -87,7 +91,7 @@ def detect_tip(
             total_cls[cls] += 1
 
             # Store the additional information
-            roi_locations.append(
+            roi_data.append(
                 {
                     "x": x_roi,
                     "y": y_roi,
@@ -138,7 +142,7 @@ def detect_tip(
         "sharp": total_cls[1],
         "dull": total_cls[0],
         "total": total_cls[0] + total_cls[1],
-        "roi_locations": roi_locations,
+        "roi_data": roi_data,
     }
 
     return output

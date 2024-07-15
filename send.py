@@ -18,15 +18,16 @@ def send_request(data, host="localhost", port=12345):
 
 
 data = {
-    "img_path": "full_scan_examples/full_scan_example1_45nmx45nm.png",
-    "scan_nm": 45,
-    "contrast": 0.6,
-    "rotation": 0,
+    "scan_path": "full_scan_examples/20230131-180445_20211029 W31 P14--STM_AtomManipulation--128_2.Z_mtrx",  # The path to the scan image. Can be a .Z_mtrx file or a regular image file.
+    "detector_options": {
+        "contrast": 0.6,  # The contrast of the image. Default is 1.0.
+        "rotation": 0.0,  # The rotation of the image. Default is 0.0.
+    },
 }
 
 result = send_request(data)
 print(result)
 
 # Save the results
-with open("results.json", "w") as f:
+with open("send_results.json", "w") as f:
     f.write(json.dumps(json.loads(result), indent=4))

@@ -7,6 +7,7 @@ from tensorflow.keras.models import load_model  # type: ignore
 
 from detector_functions.interface_helpers import get_configs, initialize_scan_configs
 from detector_functions.main_functions import detect_tip
+from detector_functions.matrix_helpers import matrix_to_img_array
 
 SCAN_CONFIG_PARAMETERS = [
     "scan_nm",
@@ -46,7 +47,10 @@ outputs = []
 for image_path in paths:
     scan_nm, contrast, rotation = scan_configs[image_path].values()
 
-    img = cv2.imread(image_path)
+    if image_path.endswith(".Z_mtrx"):
+        img = matrix_to_img_array(image_path)
+    else:
+        img = cv2.imread(image_path)
 
     tip_data = detect_tip(
         img,

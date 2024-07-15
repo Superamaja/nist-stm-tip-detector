@@ -1,6 +1,8 @@
 import json
 import os
 
+from detector_functions.matrix_helpers import get_nm_from_matrix
+
 
 def extract_nm_from_path(image_path):
     """
@@ -52,7 +54,10 @@ def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list):
                 print(f"\nMissing {param} value for {path}")
                 path_printed = True
             if param == "scan_nm":
-                configs[param] = extract_nm_from_path(path)
+                if path.endswith(".Z_mtrx"):
+                    configs[param] = get_nm_from_matrix(path)
+                else:
+                    configs[param] = extract_nm_from_path(path)
             else:
                 configs[param] = float(input(f"Enter the {param} value: "))
     return configs
