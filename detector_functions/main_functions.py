@@ -45,7 +45,7 @@ def detect_tip(
 
     total_bonds = 0
     total_cls = {0: 0, 1: 0}
-    nm_p_pixel = scan_nm / img.shape[1]
+    nm_p_pixel = scan_nm / img.shape[0] # Calculate using height
     brightest_locations = set()
     roi_locations = []
     for cnt in contours:
