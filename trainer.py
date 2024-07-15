@@ -3,6 +3,9 @@ import os
 import random
 from datetime import datetime
 
+# Disable OneDNN optimizations messages
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

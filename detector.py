@@ -2,6 +2,10 @@ import csv
 import json
 import os
 
+# Disable OneDNN optimizations and CPU instructions messages
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
 import cv2
 from tensorflow.keras.models import load_model  # type: ignore
 
@@ -14,7 +18,6 @@ SCAN_CONFIG_PARAMETERS = [
     "contrast",
     "rotation",
 ]
-
 # Load config file
 with open("config.json") as f:
     config = json.load(f)
@@ -42,6 +45,7 @@ initialize_scan_configs(scan_configs)
 
 
 model = load_model("model.h5")
+
 
 outputs = []
 for image_path in paths:
