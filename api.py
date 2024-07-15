@@ -73,6 +73,8 @@ def process_image(data: dict) -> dict:
 
     if scan_path.endswith(".Z_mtrx"):
         img = matrix_to_img_array(scan_path)
+        if img is None:
+            raise Exception("Unable to open the matrix file")
         scan_nm = (
             get_nm_from_matrix(scan_path)
             if "scan_nm" not in detector_options
