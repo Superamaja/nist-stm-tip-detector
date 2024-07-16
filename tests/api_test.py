@@ -7,12 +7,13 @@ The tests are designed to check the following:
 - The response is not None.
 - The response is valid JSON.
 - The response contains the expected keys: "sharp", "dull", "total", and "roi_data".
-- The counts of "sharp" and "dull" elements match the expected values.
+- The counts of "total" are as expected.
 
 Note:
-The expected counts for "sharp" and "dull" are hard-coded to 26 and 5, respectively.
+The expected count for "total" is hard-coded to 31.
 These counts may change if any modifications are made to the detector logic in the API.
-If the tests for "sharp" and "dull" counts fail, review the changes made to the detector logic.
+If the test for "total" counts fail, review the changes made to the detector logic and update the expected count accordingly.
+There should be no affect from changing the model.
 
 Reminder:
 Ensure that api.py is running before executing these tests.
@@ -68,15 +69,10 @@ class TestSendRequest(unittest.TestCase):
                 key, self.result_dict, f"Result should contain the key: {key}"
             )
 
-    def test_sharp_count(self):
+    def test_total_count(self):
         if self.result_dict is None:
             self.fail("Result dict is None, cannot check sharp count")
-        self.assertEqual(self.result_dict["sharp"], 26, "Expected sharp count")
-
-    def test_dull_count(self):
-        if self.result_dict is None:
-            self.fail("Result dict is None, cannot check dull count")
-        self.assertEqual(self.result_dict["dull"], 5, "Expected dull count")
+        self.assertEqual(self.result_dict["total"], 31, "Expected total count")
 
 
 if __name__ == "__main__":
