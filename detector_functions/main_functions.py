@@ -84,7 +84,7 @@ def detect_tip(
                         continue
                     roi_preprocessed = preprocess_image(roi)
                     cross_predictions.append(
-                        model.predict(roi_preprocessed, verbose=2 if scan_debug else 0)[
+                        model.predict(roi_preprocessed, verbose=1 if scan_debug else 0)[
                             0
                         ][0]
                     )
