@@ -92,7 +92,7 @@ def detect_tip(
             new_y = y_roi + y_b - new_size // 2
             for direction in range(2):
                 for shift in range(-cross_size, cross_size + 1):
-                    roi, x_roi, y_roi, new_size = resize_roi(
+                    roi, _, _, _ = resize_roi(
                         gray,
                         new_x + shift * direction,
                         new_y + shift * (1 - direction),
@@ -119,8 +119,8 @@ def detect_tip(
             # Store the additional information
             roi_locations.append(
                 {
-                    "x": x_roi,
-                    "y": y_roi,
+                    "x": new_x,
+                    "y": new_y,
                     "prediction": prediction,
                 }
             )
@@ -129,8 +129,8 @@ def detect_tip(
                 # Draw colored bounding boxes
                 cv2.rectangle(
                     img,
-                    (x_roi, y_roi),
-                    (x_roi + new_size, y_roi + new_size),
+                    (new_x, new_y),
+                    (new_x + new_size, new_y + new_size),
                     GREEN if cls else RED,
                     0,
                 )
