@@ -124,15 +124,18 @@ def detect_tip(
                 }
             )
 
-            # Draw bounding box
             if scan_debug:
-                cv2.rectangle(  # Scan red/green boxes
+                # Draw colored bounding boxes
+                cv2.rectangle(
                     img,
                     (x_roi, y_roi),
                     (x_roi + new_size, y_roi + new_size),
                     GREEN if cls else RED,
                     0,
                 )
+                # Show a live preview
+                cv2.imshow("Scan", img)
+                cv2.waitKey(1)
 
             if roi_debug:
                 cv2.imshow("Scan", img)
