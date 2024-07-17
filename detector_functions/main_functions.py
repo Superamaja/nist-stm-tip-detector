@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 
 from detector_functions.image_helpers import (
+    calculate_mode_color_ratio,
     extract_roi,
     find_contours,
     locate_brightest_pixel,
@@ -42,6 +43,27 @@ def detect_tip(
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     contours, img_contrast, edged_contrast = find_contours(img, contrast)
+
+    i = 0
+    contours = list(contours)
+    while i < len(contours):
+        # Draw bounding box for each contour
+        x, y, w, h = cv2.boundingRect(contours[i])
+        cv2.rectangle(img_contrast, (x, y), (x + w, y + h), BLUE, 0)
+
+        # Remove contours caused by image rotation by mode color pixel ratio
+        if rotation == 0:
+            i += 1
+            continue
+        if calculate_mode_color_ratio(img, (x, y), (x + w, y + h)) > 0.30:
+            print("Removing contour due to mode color ratio")
+            input()
+            contours.pop(i)
+            continue
+        i += 1
+    contours = tuple(contours)
+
+    # Merge overlapping contours
     contours = merge_overlapping_contours(contours, overlap_threshold=0)
 
     # Tqdm setup
@@ -114,13 +136,6 @@ def detect_tip(
                     (x_roi, y_roi),
                     (x_roi + new_size, y_roi + new_size),
                     GREEN if cls else RED,
-                    0,
-                )
-                cv2.rectangle(  # Contour blue boxes
-                    img_contrast,
-                    (x, y),
-                    (x + w, y + h),
-                    (0, 255, 255),
                     0,
                 )
 

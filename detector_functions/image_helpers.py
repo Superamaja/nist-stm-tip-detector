@@ -123,7 +123,8 @@ def rotate_image(img, angle):
         M,
         (cols, rows),
         borderMode=cv2.BORDER_CONSTANT,
-        borderValue=border_color,
+        # borderValue=border_color,
+        borderValue=(255, 255, 255),  # ! TEMP CHANGE
     )
 
 
@@ -159,3 +160,19 @@ def merge_overlapping_contours(contours, overlap_threshold=0.5):
         if not merged:
             merged_contours.append(base)
     return merged_contours
+
+
+def calculate_mode_color_ratio(img, pt1, pt2):
+    """
+    Calculate the ratio of the mode color to the total number of pixels in the region.
+    """
+    x1, y1 = pt1
+    x2, y2 = pt2
+    mode_color = np.bincount(img[y1:y2, x1:x2].flatten()).argmax()
+    num_mode_color = np.sum(img[y1:y2, x1:x2] == mode_color)
+
+    # Divide by 3 if the image is in color
+    if len(img.shape) == 3:
+        num_mode_color /= 3
+
+    return num_mode_color / ((x2 - x1) * (y2 - y1))
