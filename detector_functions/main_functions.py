@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 
 from detector_functions.image_helpers import (
-    calculate_mode_color_ratio,
+    calculate_black_pixel_ratio,
     extract_roi,
     find_contours,
     locate_brightest_pixel,
@@ -44,6 +44,7 @@ def detect_tip(
 
     contours, img_contrast, edged_contrast = find_contours(img, contrast)
 
+    # Remove the contours caused by the rotation
     i = 0
     contours = list(contours)
     while i < len(contours):
@@ -51,15 +52,10 @@ def detect_tip(
         x, y, w, h = cv2.boundingRect(contours[i])
         cv2.rectangle(img_contrast, (x, y), (x + w, y + h), BLUE, 0)
 
-        # Remove contours caused by image rotation by mode color pixel ratio
-        if rotation == 0:
-            i += 1
-            continue
-        if calculate_mode_color_ratio(img, (x, y), (x + w, y + h)) > 0.30:
-            print("Removing contour due to mode color ratio")
-            input()
-            contours.pop(i)
-            continue
+        # Calculate the mode color ratio for each contour
+        if rotation != 0:
+            if calculate_black_pixel_ratio(img, (x, y), (x + w, y + h)) > 0:
+                contours.pop(i)
         i += 1
     contours = tuple(contours)
 

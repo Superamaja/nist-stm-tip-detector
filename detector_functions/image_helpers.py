@@ -109,22 +109,13 @@ def rotate_image(img, angle):
         rows, cols = img.shape
     M = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
 
-    # Get the average color of just the edges
-    if len(img.shape) == 3:
-        border_color = np.average(
-            [img[0, 0], img[0, -1], img[-1, 0], img[-1, -1]], axis=0
-        )
-    else:
-        border_color = np.average([img[0, 0], img[0, -1], img[-1, 0], img[-1, -1]])
-
     # Apply the rotation
     return cv2.warpAffine(
         img,
         M,
         (cols, rows),
         borderMode=cv2.BORDER_CONSTANT,
-        # borderValue=border_color,
-        borderValue=(255, 255, 255),  # ! TEMP CHANGE
+        borderValue=(0, 0, 0),
     )
 
 
@@ -162,17 +153,16 @@ def merge_overlapping_contours(contours, overlap_threshold=0.5):
     return merged_contours
 
 
-def calculate_mode_color_ratio(img, pt1, pt2):
+def calculate_black_pixel_ratio(img, pt1, pt2):
     """
-    Calculate the ratio of the mode color to the total number of pixels in the region.
+    Calculate the ratio of black to the total number of pixels in the region.
     """
     x1, y1 = pt1
     x2, y2 = pt2
-    mode_color = np.bincount(img[y1:y2, x1:x2].flatten()).argmax()
-    num_mode_color = np.sum(img[y1:y2, x1:x2] == mode_color)
+    num_black = np.sum(img[y1:y2, x1:x2] == 0)
 
     # Divide by 3 if the image is in color
     if len(img.shape) == 3:
-        num_mode_color /= 3
+        num_black /= 3
 
-    return num_mode_color / ((x2 - x1) * (y2 - y1))
+    return num_black / ((x2 - x1) * (y2 - y1))
