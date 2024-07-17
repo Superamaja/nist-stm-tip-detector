@@ -20,7 +20,8 @@ Example success JSON:
             "y": 20, # The top left y-coordinate of the ROI.
             "size": 30, # The size of the ROI.
             "prediction": 0.8, # The prediction of the ROI.
-        }
+        },
+        ...
     ]
 }
 
