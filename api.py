@@ -140,20 +140,20 @@ def handle_client(client_socket: socket.socket) -> None:
         result = process_image(input_data)
 
         # Send the result back to the client
-        client_socket.send(json.dumps(result).encode("utf-8"))
+        client_socket.send(json.dumps(result).encode("utf-8") + b"\n")
 
     except (json.JSONDecodeError, ValueError) as e:
         error_message = f"Invalid JSON data: {str(e)}"
-        client_socket.send(json.dumps({"error": error_message}).encode("utf-8"))
+        client_socket.send(json.dumps({"error": error_message}).encode("utf-8") + b"\n")
     except TimeoutError as e:
         error_message = f"Timeout error: {str(e)}"
-        client_socket.send(json.dumps({"error": error_message}).encode("utf-8"))
+        client_socket.send(json.dumps({"error": error_message}).encode("utf-8") + b"\n")
     except ConnectionError as e:
         error_message = f"Connection error: {str(e)}"
         print(error_message)  # Log to server console
     except Exception as e:
         error_message = f"Unexpected error: {str(e)}"
-        client_socket.send(json.dumps({"error": error_message}).encode("utf-8"))
+        client_socket.send(json.dumps({"error": error_message}).encode("utf-8") + b"\n")
 
     finally:
         # Close the connection
