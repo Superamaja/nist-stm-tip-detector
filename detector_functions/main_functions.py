@@ -161,7 +161,7 @@ def detect_tip(
         "total": total_cls[0] + total_cls[1],
         "roi_data": {
             "constants": {
-                "nm_size": roi_nm_size,
+                "nm_size": float(roi_nm_size),
                 "pixel_size": new_size,
             },
             "locations": roi_locations,
