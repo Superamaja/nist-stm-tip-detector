@@ -43,6 +43,7 @@ def detect_tip(
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     contours, img_contrast, edged_contrast = find_contours(img, contrast)
+    contours = contours[::-1]
 
     # Remove the contours caused by the rotation
     i = 0
