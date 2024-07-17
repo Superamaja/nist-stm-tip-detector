@@ -75,7 +75,8 @@ def process_image(data: dict) -> dict:
     if "scan_path" not in data or "detector_options" not in data:
         raise ValueError("Invalid input data")
 
-    scan_path, detector_options = data.values()
+    scan_path = data["scan_path"]
+    detector_options = data["detector_options"]
 
     if scan_path.endswith(".Z_mtrx"):
         img = matrix_to_img_array(scan_path)
@@ -88,6 +89,9 @@ def process_image(data: dict) -> dict:
         )
     else:
         img = cv2.imread(scan_path)
+        if img is None:
+            raise ValueError("Unable to read the image file")
+
         scan_nm = detector_options.get("scan_nm", 0)
         if scan_nm == 0:
             raise ValueError("Scan size in nanometers is required for regular images")
