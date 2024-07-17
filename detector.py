@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import sys
 
 # Disable OneDNN optimizations and CPU instructions messages
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
@@ -21,6 +22,11 @@ SCAN_CONFIG_PARAMETERS = [
 # Load config file
 with open("config.json") as f:
     config = json.load(f)
+
+# Handle arguments
+if len(sys.argv) > 1:
+    if "-sd" in sys.argv:
+        config["DETECTOR_SCAN_DEBUG"] = True
 
 # Load scan configs
 if os.path.exists("configs/scan_configs.json"):
