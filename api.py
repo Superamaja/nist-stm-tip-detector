@@ -14,15 +14,20 @@ Example success JSON:
     "sharp": 10, # The number of sharp tips detected.
     "dull": 5, # The number of dull tips detected.
     "total": 15 # The total number of tips detected.
-    "roi_data": [
-        {
-            "x": 10, # The top left x-coordinate of the ROI.
-            "y": 20, # The top left y-coordinate of the ROI.
-            "size": 30, # The size of the ROI.
-            "prediction": 0.8, # The prediction of the ROI.
+    "roi_data": {
+        "constants": {
+            "nm_size": 2, # The size of the ROI in nanometers.
+            "pixel_size": 50, # The size of the ROI in pixels.
         },
-        ...
-    ]
+        "locations": [
+            {
+                "x": 10, # The top left x-coordinate of the ROI.
+                "y": 20, # The top left y-coordinate of the ROI.
+                "prediction": 0.8, # The prediction of the ROI.
+            },
+            ...
+        ]
+    }
 }
 
 Example error JSON:

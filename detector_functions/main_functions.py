@@ -71,7 +71,7 @@ def detect_tip(
     total_cls = {0: 0, 1: 0}
     nm_p_pixel = scan_nm / img.shape[0]  # Calculate using height
     brightest_locations = set()
-    roi_data = []
+    roi_locations = []
     for cnt in contour_iterator:
         x, y, w, h = cv2.boundingRect(cnt)
         if w >= CONTOUR_MIN_SIZE[0] and h >= CONTOUR_MIN_SIZE[1]:
@@ -116,11 +116,10 @@ def detect_tip(
             total_cls[cls] += 1
 
             # Store the additional information
-            roi_data.append(
+            roi_locations.append(
                 {
                     "x": x_roi,
                     "y": y_roi,
-                    "size": new_size,
                     "prediction": prediction,
                 }
             )
@@ -160,7 +159,13 @@ def detect_tip(
         "sharp": total_cls[1],
         "dull": total_cls[0],
         "total": total_cls[0] + total_cls[1],
-        "roi_data": roi_data,
+        "roi_data": {
+            "constants": {
+                "nm_size": roi_nm_size,
+                "pixel_size": new_size,
+            },
+            "locations": roi_locations,
+        },
     }
 
     return output
