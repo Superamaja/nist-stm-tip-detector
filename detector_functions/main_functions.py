@@ -25,6 +25,7 @@ CLASS_NAMES = {
 RED = (50, 50, 255)
 GREEN = (0, 255, 0)
 BLUE = (255, 200, 0)
+YELLOW = (0, 255, 255)
 
 
 def detect_tip(
@@ -51,12 +52,13 @@ def detect_tip(
     while i < len(contours):
         # Draw bounding box for each contour
         x, y, w, h = cv2.boundingRect(contours[i])
-        cv2.rectangle(img_contrast, (x, y), (x + w, y + h), BLUE, 0)
+        cv2.rectangle(img_contrast, (x, y), (x + w, y + h), YELLOW, 0)
 
         # Calculate the mode color ratio for each contour
         if rotation != 0:
             if calculate_black_pixel_ratio(img, (x, y), (x + w, y + h)) > 0:
                 contours.pop(i)
+                continue
         i += 1
     contours = tuple(contours)
 
