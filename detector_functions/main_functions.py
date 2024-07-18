@@ -82,9 +82,20 @@ def detect_tip(
             roi, x_roi, y_roi, _ = extract_roi(gray, x, y, x + w, y + h)
             new_size = int(roi_nm_size / nm_p_pixel)
 
-            # Remove duplicates from brightness centering
+            # Remove nearby duplicates from brightness centering
             x_b, y_b = locate_brightest_pixel(roi)
-            if (x_b + x_roi, y_b + y_roi) in brightest_locations:
+            area_check = False
+            for x_test in range(-cross_size * 2, cross_size * 2 + 1):
+                if area_check:
+                    break
+                for y_test in range(-cross_size * 2, cross_size * 2 + 1):
+                    if (
+                        x_b + x_roi + x_test,
+                        y_b + y_roi + y_test,
+                    ) in brightest_locations:
+                        area_check = True
+                        break
+            if area_check:
                 continue
             brightest_locations.add((x_b + x_roi, y_b + y_roi))
 
