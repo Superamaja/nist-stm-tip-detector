@@ -7,7 +7,7 @@
     "DETECTOR_ROI_DEBUG": false,
     "SCAN_FOLDER": "full_scan_examples/",
     "SCANS": [
-        "full_scan_example1_45nmx45nm.png",
+        "20230131-180445_20211029 W31 P14--STM_AtomManipulation--128_2.Z_mtrx",
         "full_scan_example2_45nmx45nm.png",
         "default_2017Jul21-230336_STM-STM_AtomManipulation--19_9.___10nmx10nm___.png",
         "default_2017Jun20-143916_STM-STM_AtomManipulation--4_1.___20nmx20nm___.png",
