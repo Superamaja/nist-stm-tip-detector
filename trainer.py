@@ -265,14 +265,14 @@ with open(f"{folder_directory}/logs.txt", "w") as f:
     f.write(
         f"""--User Notes--
 {user_notes}
-        
+
 --Config Info--
 Square NM Size: {ROI_NM_SIZE}
 Pixel Size: {SQUARE_PIXEL_SIZE}
 Augmentation: {xforms_per_image}
 Batch Size: {batch_size}
 Patience: {patience}
-        
+
 --Training Info--
 Epochs: {len(history.history["acc"])}
 
