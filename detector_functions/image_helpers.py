@@ -10,9 +10,14 @@ with open("config.json") as f:
 SQUARE_PIXEL_SIZE = config["SQUARE_PIXEL_SIZE"]
 
 
-def preprocess_image(roi):
-    """
-    Preprocess the image before feeding it to the model.
+def preprocess_image(roi: np.ndarray) -> np.ndarray:
+    """Preprocess the image before feeding it to the model.
+
+    Parameters:
+        roi (ndarray): Region of interest to preprocess
+
+    Returns:
+        ndarray: Preprocessed region of interest
     """
     if roi.shape[0] != SQUARE_PIXEL_SIZE or roi.shape[1] != SQUARE_PIXEL_SIZE:
         roi = cv2.resize(
@@ -25,9 +30,19 @@ def preprocess_image(roi):
     return roi
 
 
-def find_contours(img, alpha):
-    """
-    Processes the image and finds the contours.
+def find_contours(
+    img: np.ndarray, alpha: float = 1.0
+) -> tuple[list[np.ndarray], np.ndarray, np.ndarray]:
+    """Processes the image and finds the contours.
+
+    Parameters:
+        img (ndarray): Image to find the contours in
+        alpha (float): Contrast adjustment factor
+
+    Returns:
+        list: Contours found in the image
+        ndarray: Image with contrast adjustment applied
+        ndarray: Edges found in the image
     """
     img_contrast = cv2.convertScaleAbs(img, alpha=alpha, beta=0)
     gray = cv2.cvtColor(img_contrast, cv2.COLOR_BGR2GRAY)
@@ -38,9 +53,10 @@ def find_contours(img, alpha):
     return contours, img_contrast, edged
 
 
-def extract_roi(img: np.ndarray, x1: int, y1: int, x2: int, y2: int):
-    """
-    Extracts the region of interest from the image.
+def extract_roi(
+    img: np.ndarray, x1: int, y1: int, x2: int, y2: int
+) -> tuple[np.ndarray, int, int, int]:
+    """Extracts the region of interest from the image.
 
     Parameters:
         img (ndarray): Image to extract the region of interest from
@@ -48,6 +64,12 @@ def extract_roi(img: np.ndarray, x1: int, y1: int, x2: int, y2: int):
         y1 (int): Y coordinate of the top left corner of the square
         x2 (int): X coordinate of the bottom right corner of the square
         y2 (int): Y coordinate of the bottom right corner of the square
+
+    Returns:
+        ndarray: Region of interest
+        int: X coordinate of the top left corner of the square
+        int: Y coordinate of the top left corner of the square
+        int: Size of the square
     """
     # Calculate the size of the square
     square_size = max(x2 - x1, y2 - y1)
@@ -62,9 +84,10 @@ def extract_roi(img: np.ndarray, x1: int, y1: int, x2: int, y2: int):
     return img[y : y + square_size, x : x + square_size], x, y, square_size
 
 
-def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int):
-    """
-    Expands the region of interest to the new size.
+def resize_roi(
+    img: np.ndarray, x: int, y: int, square_size: int, new_size: int
+) -> tuple[np.ndarray, int, int, int]:
+    """Expands the region of interest to the new size.
 
     Parameters:
         img (ndarray): Image to extract the region of interest from
@@ -72,6 +95,12 @@ def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int)
         y (int): Y coordinate of the top left corner of the original square
         square_size (int): Current size of the square
         new_size (int): New size of the square
+
+    Returns:
+        ndarray: Region of interest
+        int: X coordinate of the top left corner of the square
+        int: Y coordinate of the top left corner of the square
+        int: Size of the square
     """
     x_new = x - (new_size - square_size) // 2
     y_new = y - (new_size - square_size) // 2
@@ -85,19 +114,32 @@ def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int)
     )
 
 
-def locate_brightest_pixel(img):
-    """
-    Locates the brightest pixel in the image.
+def locate_brightest_pixel(img: np.ndarray) -> tuple[int, int]:
+    """Locates the brightest pixel in the image.
+
     Finds the average location if there are multiple pixels with the same brightness.
+
+    Parameters:
+        img (ndarray): Image to locate the brightest pixel in
+
+    Returns:
+        int: X coordinate of the brightest pixel
+        int: Y coordinate of the brightest pixel
     """
     max_value = np.max(img)
     y, x = np.where(img == max_value)
     return int(np.mean(x)), int(np.mean(y))
 
 
-def rotate_image(img, angle):
-    """
-    Rotates the image by the specified angle.
+def rotate_image(img: np.ndarray, angle: float) -> np.ndarray:
+    """Rotates the image by the specified angle.
+
+    Parameters:
+        img (ndarray): Image to rotate
+        angle (float): Angle to rotate the image by clockwise
+
+    Returns:
+        ndarray: Rotated image
     """
     if len(img.shape) == 3:
         rows, cols, _ = img.shape
@@ -115,10 +157,17 @@ def rotate_image(img, angle):
     )
 
 
-def merge_overlapping_contours(contours, overlap_threshold=0.5):
-    """
-    Merge contours that overlap by more than a certain threshold.
-    Code produced by GPT-4o.
+def merge_overlapping_contours(
+    contours: tuple[np.ndarray], overlap_threshold: float = 0
+) -> list[np.ndarray]:
+    """Merge contours that overlap by more than a certain threshold.
+
+    Parameters:
+        contours (tuple): Contours to merge
+        overlap_threshold (float): Threshold for merging the contours
+
+    Returns:
+        list: Merged contours
     """
     merged_contours = []
     contours = list(contours)  # Convert tuple to list
@@ -152,9 +201,18 @@ def merge_overlapping_contours(contours, overlap_threshold=0.5):
     return merged_contours
 
 
-def calculate_black_pixel_ratio(img, pt1, pt2):
-    """
-    Calculate the ratio of black to the total number of pixels in the region.
+def calculate_black_pixel_ratio(
+    img: np.ndarray, pt1: tuple[int, int], pt2: tuple[int, int]
+) -> float:
+    """Calculate the ratio of black to the total number of pixels in the region.
+
+    Parameters:
+        img (ndarray): Image to calculate the black pixel ratio in
+        pt1 (tuple): Coordinates of the top left corner of the region
+        pt2 (tuple): Coordinates of the bottom right corner of the region
+
+    Returns:
+        float: Ratio of black pixels to the total number of pixels
     """
     x1, y1 = pt1
     x2, y2 = pt2

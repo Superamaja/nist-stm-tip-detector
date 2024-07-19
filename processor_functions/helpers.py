@@ -1,9 +1,15 @@
 import cv2
+import numpy as np
 
 
-def box_all_image_contours(contours):
-    """
-    Creates a bounding box around all the contours.
+def box_all_image_contours(contours: list[np.ndarray]) -> tuple[int, int, int, int]:
+    """Creates a bounding box around all the contours.
+
+    Parameters:
+        contours (list of ndarray): List of contours.
+
+    Returns:
+        tuple: Coordinates of the bounding box (left_x, top_y, right_x, bottom_y).
     """
     left_x, top_y, w, h = cv2.boundingRect(contours[0])
     right_x = left_x + w

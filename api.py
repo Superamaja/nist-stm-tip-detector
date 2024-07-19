@@ -62,7 +62,14 @@ model = load_model("model.h5")
 
 
 def convert_to_serializable(obj):
-    # Dictionary has numpy types scattered throughout. This function recursively converts them to Python types.
+    """Recursively converts numpy types to native Python types for serialization.
+
+    Parameters:
+        obj: Object to be converted.
+
+    Returns:
+        Object: Converted object with numpy types replaced by Python types.
+    """
     if isinstance(obj, np.integer):
         return int(obj)
     if isinstance(obj, np.floating):

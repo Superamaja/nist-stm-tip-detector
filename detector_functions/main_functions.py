@@ -38,7 +38,23 @@ def detect_tip(
     rotation=45,
     scan_debug=False,
     roi_debug=False,
-):
+) -> dict:
+    """Detects the tip in the given image.
+
+    Parameters:
+        img (ndarray): Image to process
+        scan_nm (float): Scan size in nm
+        model: Prediction model
+        roi_nm_size (int, optional): Size of the region of interest in nm.
+        cross_size (int, optional): Size of the cross for roi cross check.
+        contrast (int, optional): Contrast adjustment factor.
+        rotation (float, optional): Rotation angle for the image.
+        scan_debug (bool, optional): Enable debugging for finished scans.
+        roi_debug (bool, optional): Enable debugging for each region of interest.
+
+    Returns:
+        dict: Dictionary containing the detection results
+    """
     if rotation != 0:
         img = rotate_image(img, rotation)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

@@ -3,9 +3,14 @@ import cv2
 import numpy as np
 
 
-def matrix_to_img_array(matrix_path):
-    """
-    Extracts the image from a matrix file and returns the image as a numpy array.
+def matrix_to_img_array(matrix_path: str) -> np.ndarray:
+    """Extracts the image from a matrix file and returns the image as a numpy array.
+
+    Parameters:
+        matrix_path (str): Path to the matrix file.
+
+    Returns:
+        ndarray: Image as a numpy array.
     """
     mtrx_data = access2thematrix.MtrxData()
     traces, _ = mtrx_data.open(matrix_path)
@@ -30,9 +35,8 @@ def matrix_to_img_array(matrix_path):
     return img
 
 
-def get_nm_from_matrix(matrix_path):
-    """
-    Extracts the nm from the matrix path.
+def get_nm_from_matrix(matrix_path: str) -> float:
+    """Extracts the nm from the matrix path.
 
     Parameters:
         matrix_path (str): Path of the matrix file.

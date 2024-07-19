@@ -4,11 +4,16 @@ import os
 from detector_functions.matrix_helpers import get_nm_from_matrix
 
 
-def extract_nm_from_path(image_path):
-    """
-    Extracts the nm from the image path.
+def extract_nm_from_path(image_path: str) -> float:
+    """Extracts the nm from the image path.
 
     Finds the number between "nmx" and "nm" in the image path due to the format 45nmx45nm.
+
+    Parameters:
+        image_path (str): Path of the image
+
+    Returns:
+        float: Extracted scan size in nm
     """
     try:
         temp_path = image_path
@@ -21,9 +26,11 @@ def extract_nm_from_path(image_path):
     return scan_nm
 
 
-def initialize_scan_configs(scan_configs):
-    """
-    Create the scan configurations file.
+def initialize_scan_configs(scan_configs: dict) -> None:
+    """Create the scan configurations file.
+
+    Parameters:
+        scan_configs (dict): Scan configurations to be saved
     """
     if not os.path.exists("configs"):
         os.makedirs("configs")
@@ -31,14 +38,16 @@ def initialize_scan_configs(scan_configs):
         json.dump(scan_configs, f, indent=4)
 
 
-def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list):
-    """
-    Get the configurations for the scan from the user.
+def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list) -> dict:
+    """Get the configurations for the scan from the user.
 
     Parameters:
         path (str): Path of the image
         scan_configs (dict): Scan configurations
         SCAN_CONFIG_PARAMETERS (list): List of scan configuration parameters
+
+    Returns:
+        dict: Complete scan configurations
     """
     configs = {}
     path_printed = False
