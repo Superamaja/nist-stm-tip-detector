@@ -9,7 +9,6 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import tensorflow as tf
 from tensorflow.keras import Sequential, layers  # type: ignore
 from tensorflow.keras.callbacks import EarlyStopping  # type: ignore
 from tensorflow.keras.optimizers import Adam  # type: ignore
@@ -62,11 +61,11 @@ def validation_split_list(in_list, validation_split=0):
 
     print("validation split idx: " + str(split_idx))
 
-    for i in range(len(in_list)):
-        if (i + 1) <= split_idx:
-            v_list.append(in_list[i])
+    for i2, item in enumerate(in_list):
+        if (i2 + 1) <= split_idx:
+            v_list.append(item)
         else:
-            t_list.append(in_list[i])
+            t_list.append(item)
 
     return v_list, t_list
 

@@ -15,7 +15,7 @@ def extract_nm_from_path(image_path):
         temp_path = temp_path.split("nmx")[1]
         scan_nm = float(temp_path.split("nm")[0])
         print(f"Detected scan size: {scan_nm} nm")
-    except:
+    except (IndexError, ValueError):
         print("Could not detect scan size from the image path")
         scan_nm = float(input("Enter the scan size in nm: "))
     return scan_nm
@@ -43,7 +43,7 @@ def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list):
     configs = {}
     path_printed = False
     for param in SCAN_CONFIG_PARAMETERS:
-        if not path_printed and any(scan_configs) == False:
+        if not path_printed and scan_configs == {}:
             scan_configs = {}
             print(f"\nCreating configs for {path}")
             path_printed = True

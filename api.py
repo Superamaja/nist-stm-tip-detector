@@ -65,13 +65,13 @@ def convert_to_serializable(obj):
     # Dictionary has numpy types scattered throughout. This function recursively converts them to Python types.
     if isinstance(obj, np.integer):
         return int(obj)
-    elif isinstance(obj, np.floating):
+    if isinstance(obj, np.floating):
         return float(obj)
-    elif isinstance(obj, np.ndarray):
+    if isinstance(obj, np.ndarray):
         return obj.tolist()
-    elif isinstance(obj, dict):
+    if isinstance(obj, dict):
         return {k: convert_to_serializable(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
+    if isinstance(obj, list):
         return [convert_to_serializable(v) for v in obj]
     return obj
 
@@ -152,7 +152,7 @@ def handle_client(client_socket: socket.socket) -> None:
         # Send the result back to the client
         client_socket.send(json.dumps(result).encode("utf-8") + b"\n")
 
-    except (json.JSONDecodeError, ValueError) as e:
+    except json.JSONDecodeError as e:
         error_message = f"Invalid JSON data: {str(e)}"
         client_socket.send(json.dumps({"error": error_message}).encode("utf-8") + b"\n")
     except TimeoutError as e:
