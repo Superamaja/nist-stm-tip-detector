@@ -46,8 +46,6 @@ else:
 for i, fname in iterator:
     if i < start_index:
         continue
-    # if not DEBUG:
-    #     print(fname)
 
     img = cv2.imread(fname)
     img2 = img.copy()
