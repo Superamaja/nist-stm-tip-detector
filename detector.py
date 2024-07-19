@@ -27,6 +27,8 @@ with open("config.json") as f:
 if len(sys.argv) > 1:
     if "-sd" in sys.argv:
         config["DETECTOR_SCAN_DEBUG"] = True
+    if "-rd" in sys.argv:
+        config["DETECTOR_ROI_DEBUG"] = True
 
 # Load scan configs
 if os.path.exists("configs/scan_configs.json"):

@@ -55,10 +55,12 @@ def detect_tip(
         cv2.rectangle(img_contrast, (x, y), (x + w, y + h), YELLOW, 0)
 
         # Calculate the mode color ratio for each contour
-        if rotation != 0:
-            if calculate_black_pixel_ratio(img, (x, y), (x + w, y + h)) > 0:
-                contours.pop(i)
-                continue
+        if (
+            rotation != 0
+            and calculate_black_pixel_ratio(img, (x, y), (x + w, y + h)) > 0
+        ):
+            contours.pop(i)
+            continue
         i += 1
     contours = tuple(contours)
 

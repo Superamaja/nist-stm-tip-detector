@@ -132,17 +132,20 @@ def merge_overlapping_contours(contours, overlap_threshold=0.5):
             cnt = contours[i]
             cnt_rect = cv2.boundingRect(cnt)
             cnt_x, cnt_y, cnt_w, cnt_h = cnt_rect
-            if max(base_x, cnt_x) < min(base_x + base_w, cnt_x + cnt_w) and max(
-                base_y, cnt_y
-            ) < min(base_y + base_h, cnt_y + cnt_h):
-                if (min(base_x + base_w, cnt_x + cnt_w) - max(base_x, cnt_x)) * (
-                    min(base_y + base_h, cnt_y + cnt_h) - max(base_y, cnt_y)
-                ) >= overlap_threshold * base_w * base_h:
-                    merged_contour = np.vstack((base, cnt))
-                    contours.pop(i)
-                    contours.insert(0, merged_contour)
-                    merged = True
-                    break
+            if (
+                max(base_x, cnt_x) < min(base_x + base_w, cnt_x + cnt_w)
+                and max(base_y, cnt_y) < min(base_y + base_h, cnt_y + cnt_h)
+                and (
+                    (min(base_x + base_w, cnt_x + cnt_w) - max(base_x, cnt_x))
+                    * (min(base_y + base_h, cnt_y + cnt_h) - max(base_y, cnt_y))
+                    >= overlap_threshold * base_w * base_h
+                )
+            ):
+                merged_contour = np.vstack((base, cnt))
+                contours.pop(i)
+                contours.insert(0, merged_contour)
+                merged = True
+                break
             i += 1
         if not merged:
             merged_contours.append(base)
