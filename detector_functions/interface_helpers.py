@@ -43,7 +43,7 @@ def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list):
     configs = {}
     path_printed = False
     for param in SCAN_CONFIG_PARAMETERS:
-        if not path_printed and any(scan_configs) == False:
+        if not path_printed and scan_configs == {}:
             scan_configs = {}
             print(f"\nCreating configs for {path}")
             path_printed = True
