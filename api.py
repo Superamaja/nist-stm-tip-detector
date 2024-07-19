@@ -152,7 +152,7 @@ def handle_client(client_socket: socket.socket) -> None:
         # Send the result back to the client
         client_socket.send(json.dumps(result).encode("utf-8") + b"\n")
 
-    except (json.JSONDecodeError, ValueError) as e:
+    except (json.JSONDecodeError) as e:
         error_message = f"Invalid JSON data: {str(e)}"
         client_socket.send(json.dumps({"error": error_message}).encode("utf-8") + b"\n")
     except TimeoutError as e:
