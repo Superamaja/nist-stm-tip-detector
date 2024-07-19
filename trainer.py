@@ -9,7 +9,6 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import tensorflow as tf
 from tensorflow.keras import Sequential, layers  # type: ignore
 from tensorflow.keras.callbacks import EarlyStopping  # type: ignore
 from tensorflow.keras.optimizers import Adam  # type: ignore
