@@ -61,8 +61,8 @@ def validation_split_list(in_list, validation_split=0):
 
     print("validation split idx: " + str(split_idx))
 
-    for i, item in enumerate(in_list):
-        if (i + 1) <= split_idx:
+    for i2, item in enumerate(in_list):
+        if (i2 + 1) <= split_idx:
             v_list.append(item)
         else:
             t_list.append(item)
