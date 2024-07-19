@@ -55,10 +55,8 @@ def extract_roi(img: np.ndarray, x1: int, y1: int, x2: int, y2: int):
     # Calculate the coordinates for the square
     x = x1 + (x2 - x1) // 2 - square_size // 2
     y = y1 + (y2 - y1) // 2 - square_size // 2
-    if x < 0:
-        x = 0
-    if y < 0:
-        y = 0
+    x = max(x, 0)
+    y = max(y, 0)
 
     # Extract the square region of interest
     return img[y : y + square_size, x : x + square_size], x, y, square_size
@@ -77,10 +75,8 @@ def resize_roi(img: np.ndarray, x: int, y: int, square_size: int, new_size: int)
     """
     x_new = x - (new_size - square_size) // 2
     y_new = y - (new_size - square_size) // 2
-    if x_new < 0:
-        x_new = 0
-    if y_new < 0:
-        y_new = 0
+    x_new = max(x_new, 0)
+    y_new = max(y_new, 0)
     return (
         img[y_new : y_new + new_size, x_new : x_new + new_size],
         x_new,
