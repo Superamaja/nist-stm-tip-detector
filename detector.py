@@ -19,6 +19,10 @@ SCAN_CONFIG_PARAMETERS = [
     "contrast",
     "rotation",
 ]
+MATRIX_CONFIG_PARAMETERS = [
+    "direction",
+]
+
 # Load config file
 with open("config.json") as f:
     config = json.load(f)
@@ -40,12 +44,15 @@ else:
 configs_changed = False
 paths = []
 for path in config["SCANS"]:
+    param = SCAN_CONFIG_PARAMETERS.copy()
+    if path.endswith(".Z_mtrx"):
+        param += MATRIX_CONFIG_PARAMETERS.copy()
     new_path = config["SCAN_FOLDER"] + path
     paths.append(new_path)
     scan_configs[new_path] = get_configs(
         new_path,
         scan_configs[new_path] if new_path in scan_configs else {},
-        SCAN_CONFIG_PARAMETERS,
+        param,
     )
 
 print("Saving scan configs...")
@@ -57,10 +64,14 @@ model = load_model("model.h5")
 
 outputs = []
 for image_path in paths:
-    scan_nm, contrast, rotation = scan_configs[image_path].values()
+    scan_nm = scan_configs[image_path]["scan_nm"]
+    contrast = scan_configs[image_path]["contrast"]
+    rotation = scan_configs[image_path]["rotation"]
 
     if image_path.endswith(".Z_mtrx"):
-        img = matrix_to_img_array(image_path)
+        direction = scan_configs[image_path]["direction"]
+
+        img = matrix_to_img_array(image_path, direction)
     else:
         img = cv2.imread(image_path)
 

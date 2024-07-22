@@ -7,6 +7,10 @@ Example input JSON:
         "contrast": 1.0, # The contrast of the image. Default is 1.0.
         "rotation": 0.0 # The rotation of the image. Default is 0.0.
     }
+    "matrix_options": { # Required for matrix files.
+        "direction": 0 # The direction of the scan to use.
+            # {0: 'forward/up', 1: 'backward/up', 2: 'forward/down', 3: 'backward/down'}
+        "plane_slopes": [0.0, 0.0] # The slopes of the scan plane to subtract. Optional.
 }
 
 Example success JSON:
@@ -84,14 +88,23 @@ def convert_to_serializable(obj):
 
 
 def process_image(data: dict) -> dict:
-    if "scan_path" not in data or "detector_options" not in data:
-        raise ValueError("Invalid input data")
+    if "scan_path" not in data:
+        raise ValueError("Scan path is required")
+    if "detector_options" not in data:
+        raise ValueError("Detector options are required")
 
     scan_path = data["scan_path"]
     detector_options = data["detector_options"]
 
     if scan_path.endswith(".Z_mtrx"):
-        img = matrix_to_img_array(scan_path)
+        if "matrix_options" not in data:
+            raise ValueError("Matrix options are required for matrix files")
+        matrix_options = data["matrix_options"]
+
+        if "direction" not in matrix_options:
+            raise ValueError("Direction is required for matrix files")
+
+        img = matrix_to_img_array(scan_path, matrix_options["direction"])
         if img is None:
             raise Exception("Unable to open the matrix file")
         scan_nm = (

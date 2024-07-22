@@ -47,6 +47,9 @@ class TestSendRequest(unittest.TestCase):
                 "contrast": 0.6,
                 "rotation": 0.0,
             },
+            "matrix_options": {
+                "direction": 0,
+            },
         }
         cls.result = send_request(cls.data)
         try:

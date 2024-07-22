@@ -3,11 +3,12 @@ import cv2
 import numpy as np
 
 
-def matrix_to_img_array(matrix_path: str) -> np.ndarray:
+def matrix_to_img_array(matrix_path: str, trace: int) -> np.ndarray:
     """Extracts the image from a matrix file and returns the image as a numpy array.
 
     Parameters:
         matrix_path (str): Path to the matrix file.
+        trace (int): Trace number to extract the image from.
 
     Returns:
         ndarray: Image as a numpy array.
@@ -20,7 +21,7 @@ def matrix_to_img_array(matrix_path: str) -> np.ndarray:
         return None
 
     # Select the first image
-    im, _ = mtrx_data.select_image(traces[0])
+    im, _ = mtrx_data.select_image(traces[trace])
 
     # Normalize the data to 0-255 and reflect over the x-axis (not sure why it's like this)
     img = (im.data - np.min(im.data)) / (np.max(im.data) - np.min(im.data)) * 255
