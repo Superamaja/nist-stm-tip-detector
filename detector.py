@@ -93,7 +93,9 @@ for image_path in paths:
         "total": tip_data["total"],
     }
     for key, value in scan_configs[image_path].items():
-        output_data[key] = value
+        # Ignore parameters that aren't in every scan config
+        if key in SCAN_CONFIG_PARAMETERS:
+            output_data[key] = value
 
     outputs.append(output_data)
 
@@ -114,7 +116,8 @@ for i, output in enumerate(outputs):
     for key, value in output.items():
         export_csv[key].append(value)
     for key, value in scan_configs[output["scan"]].items():
-        export_csv[key].append(value)
+        if key in SCAN_CONFIG_PARAMETERS:
+            export_csv[key].append(value)
     export_csv["percentage"].append(percentage)
 
     # Print results
