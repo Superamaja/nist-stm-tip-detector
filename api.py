@@ -10,7 +10,7 @@ Example input JSON:
     "matrix_options": { # Required for matrix files.
         "direction": 0 # The direction of the scan to use.
             # {0: 'forward/up', 1: 'backward/up', 2: 'forward/down', 3: 'backward/down'}
-        "plane_slopes": [0.0, 0.0] # The slopes of the scan plane to subtract. Optional.
+        "plane_slopes": [0.0, 0.0] # The slopes of the scan plane to subtract in dz/dx and dz/dy. Optional.
 }
 
 Example success JSON:
@@ -104,7 +104,11 @@ def process_image(data: dict) -> dict:
         if "direction" not in matrix_options:
             raise ValueError("Direction is required for matrix files")
 
-        img = matrix_to_img_array(scan_path, matrix_options["direction"])
+        img = matrix_to_img_array(
+            scan_path,
+            matrix_options["direction"],
+            plane_slopes=matrix_options.get("plane_slopes", None),
+        )
         if img is None:
             raise Exception("Unable to open the matrix file")
         scan_nm = (
