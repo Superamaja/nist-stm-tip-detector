@@ -189,6 +189,9 @@ def detect_tip(
         cv2.imshow("Edges", edged_contrast)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+        
+    if total_bonds == 0:
+        raise ValueError("No bonds detected in the image.")
 
     output = {
         "sharp": total_cls[1],
@@ -197,7 +200,7 @@ def detect_tip(
         "roi_data": {
             "constants": {
                 "nm_size": float(roi_nm_size),
-                "pixel_size": new_size,
+                "pixel_size": new_size
             },
             "locations": roi_locations,
         },
