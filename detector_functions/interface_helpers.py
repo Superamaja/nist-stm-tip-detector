@@ -68,7 +68,7 @@ def get_configs(path: str, scan_configs: dict, SCAN_CONFIG_PARAMETERS: list) -> 
                 else:
                     configs[param] = extract_nm_from_path(path)
             elif param == "direction":
-                configs[param] = int(input(f"Enter the trace/direction index: "))
+                configs[param] = int(input("Enter the trace/direction index: "))
             else:
                 configs[param] = float(input(f"Enter the {param} value: "))
     return configs
