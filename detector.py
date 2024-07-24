@@ -59,7 +59,7 @@ print("Saving scan configs...")
 initialize_scan_configs(scan_configs)
 
 
-model = load_model("model.h5")
+model = load_model("model.keras")
 
 
 outputs = []

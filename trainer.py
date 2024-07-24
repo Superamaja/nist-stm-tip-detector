@@ -257,7 +257,6 @@ if not os.path.exists(folder_directory):
 
 # save the model
 model.save(f"{folder_directory}/model.keras")
-model.save(f"{folder_directory}/model.h5")
 
 # create logs
 with open(f"{folder_directory}/logs.txt", "w") as f:

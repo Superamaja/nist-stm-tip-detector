@@ -62,7 +62,7 @@ with open("config.json") as f:
     config = json.load(f)
 
 # Load the model
-model = load_model("model.h5")
+model = load_model("model.keras")
 
 
 def convert_to_serializable(obj):
