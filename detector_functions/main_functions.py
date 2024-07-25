@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 from detector_functions.image_helpers import (
     calculate_black_pixel_ratio,
+    cross_check_prediction,
     extract_roi,
     find_contours,
     locate_brightest_pixel,
@@ -118,27 +119,17 @@ def detect_tip(
             brightest_locations.add((x_b + x_roi, y_b + y_roi))
 
             # Perform the cross check
-            cross_predictions = []
-            new_x = x_roi + x_b - new_size // 2
-            new_y = y_roi + y_b - new_size // 2
-            for direction in range(2):
-                for shift in range(-cross_size, cross_size + 1):
-                    roi, _, _, _ = resize_roi(
-                        gray,
-                        new_x + shift * direction,
-                        new_y + shift * (1 - direction),
-                        new_size,
-                        new_size,
-                    )
-                    if roi.shape[0] == 0 or roi.shape[1] == 0:
-                        continue
-                    roi_preprocessed = preprocess_image(roi)
-                    cross_predictions.append(
-                        model.predict(roi_preprocessed, verbose=1 if scan_debug else 0)[
-                            0
-                        ][0]
-                    )
-            prediction = np.max(cross_predictions)
+            prediction, new_x, new_y, roi_preprocessed = cross_check_prediction(
+                model,
+                gray,
+                x_roi,
+                y_roi,
+                x_b,
+                y_b,
+                new_size,
+                cross_size,
+                scan_debug,
+            )
             cls = 1 if prediction >= SHARP_PREDICTION_THRESHOLD else 0
             if scan_debug:
                 print(f"Class: {CLASS_NAMES[cls]}, Prediction: {prediction}")
@@ -191,7 +182,7 @@ def detect_tip(
         cv2.imshow("Edges", edged_contrast)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        
+
     if total_bonds == 0:
         raise ValueError("No bonds detected in the image.")
 
@@ -200,10 +191,7 @@ def detect_tip(
         "dull": total_cls[0],
         "total": total_cls[0] + total_cls[1],
         "roi_data": {
-            "constants": {
-                "nm_size": float(roi_nm_size),
-                "pixel_size": new_size
-            },
+            "constants": {"nm_size": float(roi_nm_size), "pixel_size": new_size},
             "locations": roi_locations,
         },
     }

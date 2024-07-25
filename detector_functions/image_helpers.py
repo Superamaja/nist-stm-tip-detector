@@ -223,3 +223,56 @@ def calculate_black_pixel_ratio(
         num_black /= 3
 
     return num_black / ((x2 - x1) * (y2 - y1))
+
+
+def cross_check_prediction(
+    model: object,
+    gray: np.ndarray,
+    x_roi: int,
+    y_roi: int,
+    x_b: int,
+    y_b: int,
+    new_size: int,
+    cross_size: int,
+    scan_debug: bool,
+) -> tuple[float, int, int, int, np.ndarray]:
+    """Cross check the prediction by scanning the region in different directions.
+
+    Moves the region of interest in the x and y directions and uses the maximum prediction as the final prediction.
+
+    Parameters:
+        model: Prediction model.
+        gray (ndarray): Grayscale image.
+        x_roi (int): X coordinate of the top left corner of the region of interest.
+        y_roi (int): Y coordinate of the top left corner of the region of interest.
+        x_b (int): X coordinate of the brightest pixel.
+        y_b (int): Y coordinate of the brightest pixel.
+        new_size (int): New size of the region of interest.
+        cross_size (int): Size of the cross for roi cross check.
+        scan_debug (bool): Enable debugging for finished scans.
+
+    Returns:
+        float: Maximum prediction.
+        int: X coordinate of the top left corner of the region of interest.
+        int: Y coordinate of the top left corner of the region of interest.
+        ndarray: Preprocessed region of interest.
+    """
+    cross_predictions = []
+    new_x = x_roi + x_b - new_size // 2
+    new_y = y_roi + y_b - new_size // 2
+    for direction in range(2):
+        for shift in range(-cross_size, cross_size + 1):
+            roi, _, _, _ = resize_roi(
+                gray,
+                new_x + shift * direction,
+                new_y + shift * (1 - direction),
+                new_size,
+                new_size,
+            )
+            if roi.shape[0] == 0 or roi.shape[1] == 0:
+                continue
+            roi_preprocessed = preprocess_image(roi)
+            cross_predictions.append(
+                model.predict(roi_preprocessed, verbose=1 if scan_debug else 0)[0][0]
+            )
+    return np.max(cross_predictions), new_x, new_y, roi_preprocessed
