@@ -167,6 +167,8 @@ def detect_tip(
                 )
                 # Show a live preview
                 cv2.imshow("Scan", img)
+                cv2.imshow("Contrast", img_contrast)
+                cv2.imshow("Edges", edged_contrast)
                 cv2.waitKey(1)
 
             if roi_debug:
