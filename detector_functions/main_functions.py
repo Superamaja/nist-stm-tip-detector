@@ -9,8 +9,6 @@ from detector_functions.image_helpers import (
     find_contours,
     locate_brightest_pixel,
     merge_overlapping_contours,
-    preprocess_image,
-    resize_roi,
     rotate_image,
 )
 
