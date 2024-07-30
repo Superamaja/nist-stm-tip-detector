@@ -42,6 +42,7 @@ The programs that can be run are listed below in the [Program Overview](#program
 **api.py** - The API that allows for external interfaces to interact with the software to make predictions. Real examples for the JSON input and outputs are in the [/api_examples](api_examples) folder. The full list of parameters can be found at the top of [api.py](api.py).
 
 **detector.py** - An interface for the software to make predictions on STM images. Allows for efficient scanning of STM images to test models, along with useful debugging windows. Saves the configurations of the STM images (contrast, rotation, etc) to speed up the process of testing models. Exports a `results.csv` file that contains information about the output.
+
 The following flags can be used to run the detector:
 
 -   `-sd` - Activates the scan debug mode, which will display the scanned STM image along with other useful windows and information.
@@ -49,11 +50,13 @@ The following flags can be used to run the detector:
 
 **processor.py** - A program designed to process STM images and extract the dangling bond features from them to ensure consistency in the data along with matching the detector's extraction process for predictions.
 
+The following flags can be used to run the processor:
+
 -   `-d` - Activates the debug mode, which will display each training image along with the extraction of each ROI. Useful for visually debugging the ROI that becomes the new training data.
 
--   `-s` - Start index for which image to start processing. Useful for debugging at a certain point in the dataset.
+-   `-s <start_index>` - Start index for which image to start processing. Useful for debugging at a certain point in the dataset.
 
--   `-i` - The image directory to process. Overrides the default image directory in a variable at the top of the file.
+-   `-i <image_directory>` - The image directory to process. Overrides the default image directory in a variable at the top of the file.
 
 **trainer.py** - A program designed to train a machine learning model on the extracted features from the STM images. Comes with detailed logging for efficient model fine-tuning.
 
