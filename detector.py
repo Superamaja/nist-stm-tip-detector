@@ -42,16 +42,13 @@ else:
     scan_configs = {}
 
 configs_changed = False
-paths = []
 for path in config["SCANS"]:
     param = SCAN_CONFIG_PARAMETERS.copy()
     if path.endswith(".Z_mtrx"):
         param += MATRIX_CONFIG_PARAMETERS.copy()
-    new_path = config["SCAN_FOLDER"] + path
-    paths.append(new_path)
-    scan_configs[new_path] = get_configs(
-        new_path,
-        scan_configs[new_path] if new_path in scan_configs else {},
+    scan_configs[path] = get_configs(
+        path,
+        scan_configs[path] if path in scan_configs else {},
         param,
     )
 
@@ -63,7 +60,7 @@ model = load_model("model.h5")
 
 
 outputs = []
-for image_path in paths:
+for image_path in config["SCANS"]:
     scan_nm = scan_configs[image_path]["scan_nm"]
     contrast = scan_configs[image_path]["contrast"]
     rotation = scan_configs[image_path]["rotation"]
