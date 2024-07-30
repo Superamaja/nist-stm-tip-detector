@@ -100,3 +100,5 @@ This project was developed by [Connor Lin](https://github.com/Superamaja/) durin
 It was developed to serve as the foundation for future computer vision involved STM automation projects at NIST.
 
 The research poster for this project can be found [here].
+
+During development, working versions of the detection software is copied to the [ABD Navigator](https://github.com/usnistgov/ABDNavigator) repository for integration with the ABD Navigator software.
