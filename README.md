@@ -31,9 +31,9 @@ pip install -r requirements.txt
 
 Run any python file in the root directory to start a program:
 
-    ```bash
-    python <program>.py
-    ```
+```bash
+python <program>.py
+```
 
 The programs that can be run are listed below in the [Program Overview](#program-overview) section.
 
