@@ -44,6 +44,7 @@ import json
 import os
 import select
 import socket
+import sys
 import time
 
 # Disable OneDNN optimizations and CPU instructions messages
@@ -56,6 +57,17 @@ from tensorflow.keras.models import load_model  # type: ignore
 
 from detector_functions.main_functions import detect_tip
 from detector_functions.matrix_helpers import get_nm_from_matrix, matrix_to_img_array
+
+# Handle arguments
+host = "localhost"
+port = 5050
+if len(sys.argv) > 1:
+    if "--host" in sys.argv:
+        host_index = sys.argv.index("--host")
+        host = sys.argv[host_index + 1]
+    if "--port" in sys.argv:
+        port_index = sys.argv.index("--port")
+        port = int(sys.argv[port_index + 1])
 
 # Load config file
 with open("config.json") as f:
@@ -194,7 +206,7 @@ def handle_client(client_socket: socket.socket) -> None:
         client_socket.close()
 
 
-def start_server(host="localhost", port=5050) -> None:
+def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
     server_socket.listen(5)
