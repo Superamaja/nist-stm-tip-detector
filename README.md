@@ -35,11 +35,31 @@ Run any python file in the root directory to start a program:
 python <program>.py
 ```
 
+### API Usage
+
 The programs that can be run are listed below in the [Program Overview](#program-overview) section.
+
+For sole usage of the API, copy the following files to your project:
+
+-   [detector_functions/](detector_functions/)
+-   [api.py](api.py)
+-   [config.json](config.json)
+-   [model.h5](model.h5) - **NOT PROVIDED HERE**
+
+Then start the API:
+
+```bash
+python api.py
+```
 
 ## Program Overview
 
-**api.py** - The API that allows for external interfaces to interact with the software to make predictions. Real examples for the JSON input and outputs are in the [/api_examples](api_examples) folder. The full list of parameters can be found at the top of [api.py](api.py).
+**api.py** - The API that allows for external interfaces to interact with the software to make predictions. Real examples for the JSON input and outputs are in the [/api_examples](api_examples) folder. The full list of parameters can be found at the top of [api.py](api.py). The API serves to `localhost:5050` by default.
+
+The following flags can be used to run the API:
+
+-   `--host <host>` - The host to run the API on. Default is `localhost`.
+-   `--port <port>` - The port to run the API on. Default is `5050`.
 
 **detector.py** - An interface for the software to make predictions on STM images. Allows for efficient scanning of STM images to test models, along with useful debugging windows. Saves the configurations of the STM images (contrast, rotation, etc) to speed up the process of testing models. Exports a `results.csv` file that contains information about the output.
 
