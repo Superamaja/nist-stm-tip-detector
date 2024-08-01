@@ -161,7 +161,7 @@ To train a model, the following steps are recommended:
 
 ## Additional Information
 
-This project was developed by [Connor Lin](https://github.com/Superamaja/) during his 2024 [NIST](https://www.nist.gov/) internship under the mentorship of [Dr. Jonathan Wyrick](https://github.com/juanquij0te).
+This project was developed by [Connor Lin](https://connorlin.dev/) during his 2024 [NIST](https://www.nist.gov/) internship under the mentorship of [Dr. Jonathan Wyrick](https://www.nist.gov/people/jonathan-wyrick).
 
 It was developed to serve as the foundation for future computer vision involved STM automation projects at NIST.
 
