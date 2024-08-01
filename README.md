@@ -93,6 +93,47 @@ The following flags can be used to run the processor:
 
 **configs/scan_configs.json** - An automatically generated configuration file that contains the contrast, rotation, and other configurations for each STM image. Used for [detector.py](detector.py) to speed up the process of testing models.
 
+## API Input and Output
+
+The API takes in a JSON object with the following parameters:
+
+-   `scan_path` - The path to the scan image. Can be a .Z_mtrx file or a regular image file.
+-   `detector_options` - The options for the detector.
+    -   `scan_nm` - The scan size in nanometers. **DO NOT USE FOR MATRIX FILES UNLESS OVERRIDING.**
+    -   `contrast` - The contrast of the image. Default is `1.0`.
+    -   `rotation` - The rotation of the image. Default is `0.0`.
+-   `matrix_options` - The options for matrix files. **Required for matrix files.**
+    -   `direction` - The direction of the scan to use. {0: 'forward/up', 1: 'backward/up', 2: 'forward/down', 3: 'backward/down'}
+    -   `plane_slopes` - The slopes of the scan plane to subtract in dz/dx and dz/dy. **Optional.**
+
+[Example JSON input](api_examples/input.json)
+
+---
+
+The API outputs a JSON object with the following parameters:
+
+-   `sharp` - The number of sharp tips detected.
+-   `dull` - The number of dull tips detected.
+-   `total` - The total number of tips detected.
+-   `roi_data` - The data of the ROI.
+    -   `constants` - The constants of the ROI.
+        -   `nm_size` - The size of the ROI in nanometers.
+        -   `pixel_size` - The size of the ROI in pixels.
+    -   `locations` - The locations of the ROI in an array of objects.
+        -   `x` - The top left x-coordinate of the ROI.
+        -   `y` - The top left y-coordinate of the ROI.
+        -   `prediction` - The prediction of the ROI.
+
+[Example JSON output](api_examples/output.json)
+
+---
+
+If an error occurs, the API will output a JSON object with the following parameters:
+
+-   `error` - The error message.
+
+[Example JSON error output](api_examples/error.json)
+
 ## Additional Information
 
 This project was developed by [Connor Lin](https://github.com/Superamaja/) during his 2024 [NIST](https://www.nist.gov/) internship under the mentorship of [Dr. Jonathan Wyrick](https://github.com/juanquij0te).

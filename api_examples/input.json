@@ -1,0 +1,11 @@
+{
+    "scan_path": "path/to/scan.Z_mtrx",
+    "detector_options": {
+        "contrast": 1.0,
+        "rotation": 0.0
+    },
+    "matrix_options": {
+        "direction": 0,
+        "plane_slopes": [0.0, 0.0]
+    }
+}
