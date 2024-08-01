@@ -9,6 +9,8 @@ A machine learning solution to detect if a STM tip is sharp or dull given a STM 
     -   [Usage](#usage)
 -   [Program Overview](#program-overview)
 -   [Configurations](#configurations)
+-   [API Input and Output](#api-input-and-output)
+-   [Model Training](#model-training)
 -   [Additional Information](#additional-information)
 
 ## Getting Started
@@ -54,7 +56,7 @@ python api.py
 
 ## Program Overview
 
-**api.py** - The API that allows for external interfaces to interact with the software to make predictions. Real examples for the JSON input and outputs are in the [/api_examples](api_examples) folder. The full list of parameters can be found at the top of [api.py](api.py). The API serves to `localhost:5050` by default.
+**api.py** - The API that allows for external interfaces to interact with the software to make predictions. Real examples for the JSON input and outputs are in the [/api_examples](api_examples) folder. The full list of parameters can be found at the [API Input and Output](#api-input-and-output) section. The API serves to `localhost:5050` by default.
 
 The following flags can be used to run the API:
 
@@ -134,6 +136,29 @@ If an error occurs, the API will output a JSON object with the following paramet
 
 [Example JSON error output](api_examples/error.json)
 
+## Model Training
+
+To train a model, the following steps are recommended:
+
+1. Have a dataset of STM images in a `training_data/` folder. Each image should be named as `example_<index>.png` where `<index>` is the index of the image in the csv. `example_0.png` should correspond to the second row in the `features.csv` file due to the header row.
+
+    Make sure each image only has one dangling bond feature. The location doesn't matter as the `processor.py` will extract the feature from the image.
+
+2. The `training_data/` folder should also have a `features.csv` file. The file should look like the following:
+
+    | defectType | tipQuality | sampleBias | scaleX      | scaleY      |
+    | ---------- | ---------- | ---------- | ----------- | ----------- |
+    | DB         | sharp      | 2          | 5.599609375 | 5.599609375 |
+    | DB         | dull       | 2          | 5.6015625   | 5.599609375 |
+
+3. Run the [processor.py](processor.py) program to extract features and normalize the data. The program will output a `features.csv` file in the `processed_data/` folder along with the processed images.
+
+4. Run the [trainer.py](trainer.py) program to train a model on the processed data. Make sure to adjust any parameters necessary in the program to fine-tune the model. The model will be saved to the `models` directory with the current iteration number and timestamp.
+
+5. Test the model with the [detector.py](detector.py) program. Make sure to adjust any parameters necessary in the program to fine-tune the model. The program will output a `results.csv` file in the `results/` folder with the predictions.
+
+**Note:** Make sure the settings in the [config.json](config.json) are set before beginning the data processing. The variables need to be consistent across processing, training, and detection.
+
 ## Additional Information
 
 This project was developed by [Connor Lin](https://github.com/Superamaja/) during his 2024 [NIST](https://www.nist.gov/) internship under the mentorship of [Dr. Jonathan Wyrick](https://github.com/juanquij0te).
@@ -143,3 +168,7 @@ It was developed to serve as the foundation for future computer vision involved 
 The research poster for this project can be found [here].
 
 During development, working versions of the detection software is copied to the [ABD Navigator](https://github.com/usnistgov/ABDNavigator) repository for integration with the ABD Navigator software.
+
+## License
+
+This project is licensed under the NIST Open Source License - See the [LICENSE.md](LICENSE.md) file for details.
