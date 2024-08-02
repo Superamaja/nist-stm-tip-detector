@@ -1,9 +1,10 @@
 # STM Tip Detector
 
-A machine learning solution to detect if a STM tip is sharp or dull given a STM image. It uses a convolutional neural network to make predictions on the sharpness of the tip through the extraction of dangling bond features from the STM image.
+A machine learning solution for automatically assessing the sharpness of Scanning Tunneling Microscope (STM) tips using convolutional neural networks.
 
 ## Table of Contents
 
+-   [Overview](#overview)
 -   [Getting Started](#getting-started)
     -   [Installation](#installation)
     -   [Usage](#usage)
@@ -13,6 +14,18 @@ A machine learning solution to detect if a STM tip is sharp or dull given a STM 
 -   [API Input and Output](#api-input-and-output)
 -   [Additional Information](#additional-information)
 -   [License](#license)
+
+## Overview
+
+This project utilizes a convolutional neural network to analyze STM images and predict tip sharpness based on the extraction of dangling bond features. By automating this critical assessment, the STM Tip Detector aims to enhance the efficiency and reliability of STM operations.
+
+STM is a powerful tool used to image surfaces at the atomic level, where tip sharpness is crucial for obtaining high-quality images. Sharp tips are essential for precise measurements and are particularly important for vision-related lithography automations. This software package provides a comprehensive solution for processing STM images, extracting relevant features, training machine learning models, and making real-time predictions on tip quality.
+
+### Examples
+
+Scanned STM images with sharp and dull tips processed by [detector.py](detector.py) are shown below:
+
+![Sharp Scan Example](examples/full_scan_1.jpg) ![Dull Scan Example](examples/full_scan_2.jpg)
 
 ## Getting Started
 
