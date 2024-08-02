@@ -1,4 +1,4 @@
-# STM Tip Detectora
+# STM Tip Detector
 
 A machine learning solution for automatically assessing the sharpness of Scanning Tunneling Microscope (STM) tips using convolutional neural networks.
 
