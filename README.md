@@ -76,29 +76,31 @@ See the [API Input and Output](#api-input-and-output) section for more informati
 
 **api.py** - The API that allows for external interfaces to interact with the software to make predictions. Real examples for the JSON input and outputs are in the [/api_examples](api_examples) folder. The full list of parameters can be found at the [API Input and Output](#api-input-and-output) section. The API serves to `localhost:5050` by default.
 
-| Flag            | Description                | Default     |
-| --------------- | -------------------------- | ----------- |
-| `--host <host>` | The host to run the API on | `localhost` |
-| `--port <port>` | The port to run the API on | `5050`      |
+The following flags can be used to run the API:
+
+-   `--host <host>` - The host to run the API on. Default is `localhost`.
+-   `--port <port>` - The port to run the API on. Default is `5050`.
 
 ---
 
 **detector.py** - An interface for the software to make predictions on STM images. Allows for efficient scanning of STM images to test models, along with useful debugging windows. Saves the configurations of the STM images (contrast, rotation, etc) to speed up the process of testing models. Exports a `results.csv` file that contains information about the output.
 
-| Flag  | Description                                                                                                                                                 |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-sd` | Activates the scan debug mode, which will display the scanned STM image along with other useful windows and information                                     |
-| `-rd` | Activates the ROI debug mode, which will display each extracted ROI from the STM image. Useful for visually debugging the ROI that gets passed to the model |
+The following flags can be used to run the detector:
+
+-   `-sd` - Activates the scan debug mode, which will display the scanned STM image along with other useful windows and information.
+-   `-rd` - Activates the ROI debug mode, which will display each extracted ROI from the STM image. Useful for visually debugging the ROI that gets passed to the model.
 
 ---
 
 **processor.py** - A program designed to process STM images and extract the dangling bond features from them to ensure consistency in the data along with matching the detector's extraction process for predictions.
 
-| Flag             | Description                                                                                                                                                                      |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-d`             | Activates the debug mode, which will display each training image along with the extraction of each ROI. Useful for visually debugging the ROI that becomes the new training data |
-| `-s <index>`     | Start index for which image to start processing. Useful for debugging at a certain point in the dataset                                                                          |
-| `-i <directory>` | The image directory to process. Overrides the default image directory in a variable at the top of the file                                                                       |
+The following flags can be used to run the processor:
+
+-   `-d` - Activates the debug mode, which will display each training image along with the extraction of each ROI. Useful for visually debugging the ROI that becomes the new training data.
+
+-   `-s <start_index>` - Start index for which image to start processing. Useful for debugging at a certain point in the dataset.
+
+-   `-i <image_directory>` - The image directory to process. Overrides the default image directory in a variable at the top of the file.
 
 ---
 
