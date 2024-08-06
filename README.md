@@ -106,6 +106,10 @@ The following flags can be used to run the processor:
 
 **trainer.py** - A program designed to train a machine learning model on the extracted features from the STM images. Comes with detailed logging for efficient model fine-tuning.
 
+---
+
+**Note**: Any program that displays a debug window will require the user to close the window to continue the program. You may press `q` to close all the windows and continue the program.
+
 ## Configurations
 
 **config.json** - A configuration file that contains all the hyperparameters for the model. Used for global variables that need to be consistent across all components of the software. Also includes variables to speed up the process of creating and testing models.
