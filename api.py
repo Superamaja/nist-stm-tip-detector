@@ -103,6 +103,7 @@ def process_image(data: dict) -> dict:
         scan_nm=scan_nm,
         roi_nm_size=config["ROI_NM_SIZE"],
         model=model,
+        contour_min_size=config["DETECTOR_MIN_NM_CONTOUR"],
         cross_size=config["DETECTOR_CROSS_SIZE"],
         contrast=contrast,
         rotation=rotation,

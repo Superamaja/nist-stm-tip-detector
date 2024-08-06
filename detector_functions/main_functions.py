@@ -13,10 +13,6 @@ from detector_functions.image_helpers import (
 )
 
 # Constants
-CONTOUR_MIN_SIZE = (
-    0.9,
-    0.9,
-)  # Minimum size of the contour to pass (width, height) in nm
 SHARP_PREDICTION_THRESHOLD = 0.5  # Prediction threshold for sharpness - Greater than or equal to this value is sharp, otherwise dull
 CLASS_NAMES = {
     0: "Dull",
@@ -35,6 +31,7 @@ def detect_tip(
     scan_nm,
     model,
     roi_nm_size=2,
+    contour_min_size=(0.9, 0.9),
     cross_size=0,
     contrast=1,
     rotation=45,
@@ -98,8 +95,8 @@ def detect_tip(
     for cnt in contour_iterator:
         x, y, w, h = cv2.boundingRect(cnt)
         if (
-            w >= CONTOUR_MIN_SIZE[0] / nm_p_pixel
-            and h >= CONTOUR_MIN_SIZE[1] / nm_p_pixel
+            w >= contour_min_size[0] / nm_p_pixel
+            and h >= contour_min_size[1] / nm_p_pixel
         ):
             # Extract the ROI and resize it to a square
             roi, x_roi, y_roi, _ = extract_roi(gray, x, y, x + w, y + h)

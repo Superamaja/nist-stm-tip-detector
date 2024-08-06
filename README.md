@@ -116,6 +116,7 @@ The following flags can be used to run the processor:
 
 -   `ROI_NM_SIZE` - The size of the ROI in nanometers. Used to extract the ROI for processing training data and detecting sharpness on STM images.
 -   `SQUARE_PIXEL_SIZE` - The pixel size of the extracted ROI. Used to resize the ROI to a consistent size for the model.
+-   `DETECTOR_MIN_NM_CONTOUR` - The minimum size of the contour to be considered a valid ROI. Used to filter out small contours that are not valid dangling bond features. Value is in nanometers as an array of `[min_width, min_height]`.
 -   `DETECTOR_CROSS_SIZE` - The size of the cross that is used to "cross scan" a detected ROI. Essentially creates vertical and horizontal shifts to a detected ROI and uses the max prediction as the final prediction.
 -   `DETECTOR_SCAN_DEBUG` - A variable to activate the scan debug mode in the detector. See the detector.py `-sd` section for more information.
 -   `DETECTOR_ROI_DEBUG` - A variable to activate the ROI debug mode in the detector. See the detector.py `-rd` section for more information.

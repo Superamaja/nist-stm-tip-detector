@@ -1,6 +1,7 @@
 {
     "ROI_NM_SIZE": 2,
     "SQUARE_PIXEL_SIZE": 38,
+    "DETECTOR_MIN_NM_CONTOUR": [0.9, 0.9],
     "DETECTOR_CROSS_SIZE": 1,
     "DETECTOR_SCAN_DEBUG": false,
     "DETECTOR_ROI_DEBUG": false,
